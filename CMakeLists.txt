@@ -21,8 +21,6 @@ if(LINUX)
     set(CMAKE_C_COMPILER clang)
 endif()
 
-
-
 # Find Vulkan SDK
 find_package(Vulkan REQUIRED)
 
