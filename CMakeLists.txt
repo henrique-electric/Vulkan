@@ -40,8 +40,9 @@ if(APPLE)
 endif()
 
 # Include and link
-add_executable(MyVulkanApp src/main.cpp)
+add_executable(MyVulkanApp src/main.cpp src/window.cpp)
 target_include_directories(MyVulkanApp PRIVATE /opt/homebrew/include/)
 target_include_directories(MyVulkanApp PRIVATE ${Vulkan_INCLUDE_DIRS})
+target_include_directories(MyVulkanApp PRIVATE ./include/)
 target_link_libraries(MyVulkanApp PRIVATE ${Vulkan_LIBRARIES})
 target_link_libraries(MyVulkanApp PRIVATE glfw)
