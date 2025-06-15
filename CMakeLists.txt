@@ -11,8 +11,17 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(glfw)
 
-set(CMAKE_CXX_COMPILER clang++)
-set(CMAKE_C_COMPILER clang)
+if(WIN32)
+    set(CMAKE_CXX_COMPILER cl)
+    set(CMAKE_C_COMPILER cl)
+endif()
+
+if(LINUX)
+    set(CMAKE_CXX_COMPILER clang++)
+    set(CMAKE_C_COMPILER clang)
+endif()
+
+
 
 # Find Vulkan SDK
 find_package(Vulkan REQUIRED)
@@ -23,6 +32,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 if(APPLE)
     find_library(MOLTENVK_LIBRARY MoltenVK PATHS ${Vulkan_LIBRARY})
+    set(CMAKE_CXX_COMPILER clang++)
+    set(CMAKE_C_COMPILER clang)
 endif()
 
 # Include and link
