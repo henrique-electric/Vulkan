@@ -11,10 +11,12 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(glfw)
 
-# Then link it with your target
+set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_C_COMPILER clang)
 
 # Find Vulkan SDK
 find_package(Vulkan REQUIRED)
+
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
