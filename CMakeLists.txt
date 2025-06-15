@@ -12,8 +12,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glfw)
 
 if(WIN32)
-    set(CMAKE_CXX_COMPILER cl)
-    set(CMAKE_C_COMPILER cl)
+    if(MSVC)
+        set(CMAKE_CXX_COMPILER cl)
+        set(CMAKE_C_COMPILER cl)
+    else()
+        set(CMAKE_CXX_COMPILER clang++)
+        set(CMAKE_C_COMPILER clang)
+    endif()
 endif()
 
 if(LINUX)
