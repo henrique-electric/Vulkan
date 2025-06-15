@@ -13,6 +13,18 @@
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-arm64"
         },
+        {
+            "name": "Windows",
+            "includePath": [
+                "${workspaceFolder}\\include\\",
+                "C:\\SDKs\\Vulkan\\Include",
+                "C:\\SDKs\\glfw-3.4.bin.WIN64\\include"
+            ],
+            "compilerPath": "C:\\Program Files\\LLVM\\bin\\clang++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
     ],
     "version": 4
 }
