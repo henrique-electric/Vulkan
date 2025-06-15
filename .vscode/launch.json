@@ -1,6 +1,7 @@
 {
   "version": "0.2.0",
   "configurations": [
+    
     {
       "name": "Debug MyApp",
       "type": "cppdbg",
@@ -12,13 +13,16 @@
       "environment": [],
       "externalConsole": false,
       "MIMode": "lldb",
+      "miDebuggerPath": "C:\\Program Files\\LLVM\\bin\\lldb.exe",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for LLDB",
           "text": "settings set target.pretty-printing true",
           "ignoreFailures": true,
         }
-      ]
+      ],
+      "preLaunchTask": "build-project",
     }
   ]
 }
+
