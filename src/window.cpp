@@ -3,7 +3,8 @@
 namespace win {
 
     // Window contructor
-    Window::Window(const char *name, int width, int height, std::function<void(void)> mainFunc) : VulkanEng(name, "Engine"), m_height(height), m_width(width), m_mainLoop(std::move(mainFunc)) {
+    Window::Window(const char *name, int width, int height, std::function<void(void)> mainFunc) : VulkanEng(name, "Engine"), m_height(height),
+                                                                                                m_width(width), m_mainLoop(std::move(mainFunc)) {
 
         // Initialize GLFW and set the window hints
         glfwInit();
@@ -20,6 +21,12 @@ namespace win {
 
     // Object descontructor, frees the glfw resources and deletes vulkan instance
     Window::~Window() {
+
+// Clean all resources used for debbuging
+#ifdef DEBUG
+    cleanDebugRes();
+#endif
+
         vkDestroyInstance(m_vkInstance, nullptr);
         glfwDestroyWindow(m_glfwWin);
         glfwTerminate();
