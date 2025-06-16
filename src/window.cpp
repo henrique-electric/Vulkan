@@ -1,4 +1,3 @@
-#include <utility>
 #include <window.hpp>
 
 namespace win {
@@ -37,6 +36,10 @@ namespace win {
 
 namespace win {
     void Window::windowKeyHandler(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        
+        switch (key) {
+            case GLFW_KEY_A:
+                std::cout << ((action == GLFW_PRESS) ? "Pressed A\n" : "Released A\n");
+                break;
+        }
     }
 }
