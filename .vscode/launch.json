@@ -15,7 +15,7 @@
       "miDebuggerPath": "C:\\Program Files\\LLVM\\bin\\lldb.exe"
     },
     {
-      "name": "Debug Macos",
+      "name": "Debug Macos and Linux",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/MyVulkanApp",
