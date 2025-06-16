@@ -3,3 +3,4 @@ out
 .vs
 .DS_Store
 .idea
+cmake-build-debug
