@@ -2,7 +2,21 @@
 
 namespace vkEng
 {
+    void VulkanEng::listAvailableExtensions() {
+        uint32_t extCount = 0;
+        vkEnumerateInstanceExtensionProperties(nullptr, &extCount, nullptr);
+
+        std::vector<VkExtensionProperties> extensions(extCount);
+        vkEnumerateInstanceExtensionProperties(nullptr, &extCount, extensions.data());
+
+        for (auto extension: extensions) {
+            std::cout << "Extension: " << extension.extensionName << std::endl;
+        }
+    }
+
     VulkanEng::VulkanEng(const char *appName, const char *engName) {
+
+        listAvailableExtensions();
 
         // Init struct containing the info about the application
         m_appInfo.sType  = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -35,7 +49,6 @@ namespace vkEng
         if (vkCreateInstance(&m_instanceInfo, nullptr, &m_vkInstance) != VK_SUCCESS) {
             throw std::runtime_error("Error to init a vulkan instance");
         }
-
 
     }
 } 
