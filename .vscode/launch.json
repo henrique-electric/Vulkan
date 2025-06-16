@@ -1,28 +1,28 @@
 {
   "version": "0.2.0",
   "configurations": [
-    
     {
-      "name": "Debug MyApp",
+      "name": "Debug Windows",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/MyVulkanApp",
+      "program": "${workspaceFolder}\\build\\MyVulkanApp.exe",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${fileDirname}",
       "environment": [],
       "externalConsole": false,
       "MIMode": "lldb",
-      "miDebuggerPath": "C:\\Program Files\\LLVM\\bin\\lldb.exe",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for LLDB",
-          "text": "settings set target.pretty-printing true",
-          "ignoreFailures": true,
-        }
-      ],
+      "miDebuggerPath": "C:\\Program Files\\LLVM\\bin\\lldb.exe"
+    },
+    {
+      "name": "Debug Macos",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/MyVulkanApp",
+      "MIMode": "lldb",
       "preLaunchTask": "build-project",
-    }
+      "cwd": "${workspaceFolder}"
+    },
   ]
 }
 
