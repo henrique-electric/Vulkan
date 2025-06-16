@@ -1,13 +1,14 @@
 #pragma once
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <vulkanEng.hpp>
 #include <string>
 #include <iostream>
 #include <stdexcept>
 #include <functional>
 
 namespace win {
-    class Window
+    class Window : public vkEng::VulkanEng
     {
     private:
         GLFWwindow *m_glfwWin;
