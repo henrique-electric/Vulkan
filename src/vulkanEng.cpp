@@ -27,7 +27,7 @@ namespace vkEng
         // Init the structure used to create a vulkan instance
         m_instanceInfo.sType  = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         m_instanceInfo.pApplicationInfo = &m_appInfo;
-        m_instanceInfo.enabledExtensionCount = m_extCount;
+        m_instanceInfo.enabledExtensionCount = m_instExts.size();
         m_instanceInfo.ppEnabledExtensionNames = m_instExts.data();
         m_instanceInfo.enabledLayerCount = 0;
 
