@@ -12,7 +12,8 @@
       "environment": [],
       "externalConsole": false,
       "MIMode": "lldb",
-      "miDebuggerPath": "C:\\Program Files\\LLVM\\bin\\lldb.exe"
+      "miDebuggerPath": "C:\\Program Files\\LLVM\\bin\\lldb.exe",
+      "preLaunchTask": "build-project"
     },
     {
       "name": "Debug Macos and Linux",
