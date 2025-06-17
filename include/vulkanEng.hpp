@@ -1,11 +1,11 @@
 #pragma once
 #define DEBUG
+
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 #include <cstdint>
 #include <vector>
 #include <iostream>
-
 namespace vkEng
 {
     class VulkanEng
@@ -25,9 +25,9 @@ namespace vkEng
 
         uint32_t m_extCount{}; // number of extensions
         std::vector<const char*> m_instExts{}; // Extension list
+        uint32_t m_valLayersCount{0};
 
 #ifdef DEBUG
-        uint32_t m_valLayersCount{};
         std::vector<const char*> m_valLayers{};
 
         VkDebugUtilsMessengerCreateInfoEXT m_debugMessengerInfo{};
@@ -37,12 +37,15 @@ namespace vkEng
                                                             VkDebugUtilsMessageTypeFlagsEXT messageType,
                                                             const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
+        void setupDebugLayersAndExt();
+        void populateDebugMessengerStruct();
         VkResult setupDebugger();
 #endif
 
         // Functions
         static void listAvailableExtensions();
         static void listAvailableLayers();
+        void setupApplicationInfo(const char *appName, const char *engName);
 
     public:
         VulkanEng(const char *appName, const char *engName);

@@ -21,21 +21,25 @@ namespace vkEng {
         vkEnumerateInstanceLayerProperties(&layersCount, layers.data());
 
         for (auto& layer : layers) {
-            std::cout << "Layer Name = " << layer.layerName << "\nLayer Description = " << layer.description << std::endl;
+            std::cout << "Layer Name = " << layer.layerName << std::endl;
         }
 
     }
 
+    void VulkanEng::setupApplicationInfo(const char *appName, const char *engName) {
+         m_appInfo.sType  = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+         m_appInfo.pEngineName  = engName;
+         m_appInfo.pApplicationName = appName;
+         m_appInfo.apiVersion = VK_API_VERSION_1_0;
+         m_appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+         m_appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+         m_appInfo.pNext = nullptr;
+    }
+
     VulkanEng::VulkanEng(const char *appName, const char *engName) {
 
-        // Init struct containing the info about the application
-        m_appInfo.sType  = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        m_appInfo.pEngineName  = engName;
-        m_appInfo.pApplicationName = appName;
-        m_appInfo.apiVersion = VK_API_VERSION_1_0;
-        m_appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        m_appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-        m_appInfo.pNext = nullptr;
+       setupApplicationInfo(appName, engName); // Init struct containing the info about the application
+
 
         // Get the vulkan instances required by GLFW
         const char **extensions = glfwGetRequiredInstanceExtensions(&m_extCount);
@@ -55,29 +59,18 @@ namespace vkEng {
 
 // Load all validation layers and Instance extensions if in debug enviroment
 #ifdef DEBUG
-        m_instExts.emplace_back("VK_EXT_debug_utils"); // load the extension for debbugin
+        setupDebugLayersAndExt();
+        populateDebugMessengerStruct();
 
-        vkEnumerateInstanceLayerProperties(&m_valLayersCount, nullptr); // Get how many layers available
+        m_instanceInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &m_debugMessengerInfo;
+#else
+         m_instanceInfo.enabledLayerCount = 0;
 
-        std::vector<VkLayerProperties> tmpLayerVector(m_valLayersCount); // Initialize a temporary vector to store the Layers structures
-        vkEnumerateInstanceLayerProperties(&m_valLayersCount, tmpLayerVector.data()); // Put the layer structs inside the vector
-
-         for (auto& extension : m_instExts)
-                std::cout << "Loaded extension ---> " << extension << "\n";
-
-         for (auto &layer : tmpLayerVector) {
-             m_valLayers.emplace_back(std::move(layer.layerName)); // Add the layer name to the layer vector
-             std::cout << "Loaded Layer---> " << layer.layerName << "\n";
-         }
-
-        m_instanceInfo.enabledLayerCount = m_valLayersCount;
-        m_instanceInfo.ppEnabledLayerNames = m_valLayers.data();
 #endif
 
          // Finally add the extensions list the extensions to be used by the instance
          m_instanceInfo.enabledExtensionCount = m_instExts.size();
          m_instanceInfo.ppEnabledExtensionNames = m_instExts.data();
-         m_instanceInfo.enabledLayerCount = 0;
 
         if (vkCreateInstance(&m_instanceInfo, nullptr, &m_vkInstance) != VK_SUCCESS) {
             throw std::runtime_error("Error to init a vulkan instance");
