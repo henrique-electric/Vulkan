@@ -24,7 +24,7 @@ namespace win {
 
 // Clean all resources used for debbuging
 #ifdef DEBUG
-       // cleanDebugRes();
+       cleanDebugRes();
 #endif
 
         vkDestroyInstance(m_vkInstance, nullptr);
