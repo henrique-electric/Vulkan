@@ -15,7 +15,7 @@ FetchContent_MakeAvailable(glfw)
 find_package(Vulkan REQUIRED)
 
 # Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 if(APPLE)
     find_library(MOLTENVK_LIBRARY MoltenVK PATHS ${Vulkan_LIBRARY})
@@ -23,7 +23,8 @@ endif()
 
 # Include and link
 add_executable(MyVulkanApp src/main.cpp src/window.cpp src/vulkanEng/vulkanEng.cpp
-        src/vulkanEng/vulkanEngDebug.cpp)
+        src/vulkanEng/vulkanEngDebug.cpp src/utils.cpp)
+        
 target_include_directories(MyVulkanApp PRIVATE /opt/homebrew/include/)
 target_include_directories(MyVulkanApp PRIVATE ${Vulkan_INCLUDE_DIRS})
 target_include_directories(MyVulkanApp PRIVATE ./include/)

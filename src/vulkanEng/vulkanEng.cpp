@@ -1,30 +1,8 @@
 #include <vulkanEng.hpp>
 
+gpuDevice
+
 namespace vkEng {
-     void VulkanEng::listAvailableExtensions() {
-        uint32_t extCount = 0;
-        vkEnumerateInstanceExtensionProperties(nullptr, &extCount, nullptr);
-
-        std::vector<VkExtensionProperties> extensions(extCount);
-        vkEnumerateInstanceExtensionProperties(nullptr, &extCount, extensions.data());
-
-        for (auto&[extensionName, specVersion]: extensions) {
-            std::cout << "Extension: " << extensionName << std::endl;
-        }
-    }
-
-    void VulkanEng::listAvailableLayers() {
-        uint32_t layersCount = 0;
-        vkEnumerateInstanceLayerProperties(&layersCount, nullptr);
-
-        std::vector<VkLayerProperties> layers(layersCount);
-        vkEnumerateInstanceLayerProperties(&layersCount, layers.data());
-
-        for (auto& layer : layers) {
-            std::cout << "Layer Name = " << layer.layerName << std::endl;
-        }
-
-    }
 
     void VulkanEng::setupApplicationInfo(const char *appName, const char *engName) {
          m_appInfo.sType  = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -34,6 +12,48 @@ namespace vkEng {
          m_appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
          m_appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
          m_appInfo.pNext = nullptr;
+    }
+    
+    int VulkanEng::analyzeGpu(std::vector<gpuDevice>& physicalDevices) {
+        
+        // Run throught an array with all the GPUs
+        for (int i = 0; i < physicalDevices.size(); i++) {
+            if (physicalDevices[i].properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+                m_graphicsCard = std::move(physicalDevices[i]); // Pick the card if it is a discrete GPU
+                return i; // Return the index of the GPU in the array
+            }
+        }
+        
+        m_graphicsCard = std::move(physicalDevices[0]); // There is no discrete GPU, pick the first one found
+        return 0;
+    }
+
+    void VulkanEng::getGpuVector(std::vector<gpuDevice> &array) {
+        uint32_t availableCards = 0;
+        vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, nullptr);
+        
+        VkPhysicalDevice cardsFound[availableCards];
+        VkPhysicalDeviceProperties cardsPropeties[availableCards];
+        VkPhysicalDeviceFeatures cardsFeatures[availableCards];
+        
+        vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, cardsFound);
+        
+        gpuDevice newCardStruct{};
+        
+        for (int i = 0; i < availableCards; i++) {
+            vkGetPhysicalDeviceProperties(cardsFound[i], &cardsPropeties[i]);
+            vkGetPhysicalDeviceFeatures(cardsFound[i], &cardsFeatures[i]);
+            
+            newCardStruct.device = cardsFound[i];
+            newCardStruct.properties = cardsPropeties[i];
+            newCardStruct.features = cardsFeatures[i];
+            array.push_back(newCardStruct);
+        }
+    }
+
+    void VulkanEng::setupGraphicsCard() {
+        std::vector<gpuDevice> gpus;
+        getGpuVector(gpus);
     }
 
     VulkanEng::VulkanEng(const char *appName, const char *engName) {
@@ -59,7 +79,6 @@ namespace vkEng {
 
 // Load all validation layers and Instance extensions if in debug enviroment
 #ifdef DEBUG
-        listAvailableLayers();
         setupDebugLayersAndExt();
         populateDebugMessengerStruct();
 
@@ -76,11 +95,11 @@ namespace vkEng {
         if (vkCreateInstance(&m_instanceInfo, nullptr, &m_vkInstance) != VK_SUCCESS) {
             throw std::runtime_error("Error to init a vulkan instance");
         }
-
+        
 // Setup the messenger debugger if in debug enviroment
 #ifdef DEBUG
          setupDebugger();
 #endif
-
+        setupGraphicsCard();
     }
-} 
+}

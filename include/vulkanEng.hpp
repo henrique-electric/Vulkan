@@ -15,10 +15,17 @@
 
 namespace vkEng
 {
+    struct gpuDevice {
+        VkPhysicalDevice device;
+        VkPhysicalDeviceProperties properties;
+        VkPhysicalDeviceFeatures features;
+    };
+
     class VulkanEng
     {
     protected:
         VkInstance m_vkInstance{}; // Stores the vulkan instance itself
+        gpuDevice  m_graphicsCard{};
 
 #ifdef DEBUG
         VkDebugUtilsMessengerEXT m_debugMessenger{};
@@ -32,6 +39,9 @@ namespace vkEng
 
         uint32_t m_extCount{}; // number of extensions
         std::vector<const char*> m_instExts{}; // Extension list
+        
+        int analyzeGpu(std::vector<gpuDevice>& physicalDevices);
+        void getGpuVector(std::vector<gpuDevice>& array);
 
 #ifdef DEBUG
         uint32_t m_valLayersCount{0};
@@ -51,9 +61,8 @@ namespace vkEng
 #endif
 
         // Functions
-        static void listAvailableExtensions();
-        static void listAvailableLayers();
         void setupApplicationInfo(const char *appName, const char *engName);
+        void setupGraphicsCard();
 
     public:
         VulkanEng(const char *appName, const char *engName);
