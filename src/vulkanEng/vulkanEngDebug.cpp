@@ -22,17 +22,10 @@ namespace vkEng {
     void VulkanEng::setupDebugLayersAndExt() {
         m_instExts.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME); // load the extension for debbugin
 
-        //vkEnumerateInstanceLayerProperties(&m_valLayersCount, nullptr); // Get how many layers available
-        std::vector<VkLayerProperties> tmpLayerVector(m_valLayersCount); // Initialize a temporary vector to store the Layers structures
-        vkEnumerateInstanceLayerProperties(&m_valLayersCount, tmpLayerVector.data()); // Put the layer structs inside the vector
-
         //Load basic validation layers
-        m_valLayers.push_back("VK_LAYER_NV_optimus");
-        m_valLayers.push_back("VK_LAYER_NV_present");
-        m_valLayers.push_back("VK_LAYER_LUNARG_crash_diagnostic");
-       
+        handleInstanceLayerLoading(std::vector<const char*>({"Test", "Hi"}));
 
-        m_instanceInfo.enabledLayerCount = m_valLayers.size();
+        m_instanceInfo.enabledLayerCount = static_cast<uint32_t>(m_valLayers.size());
         m_instanceInfo.ppEnabledLayerNames = m_valLayers.data();
     }
 
@@ -49,6 +42,27 @@ namespace vkEng {
 
         m_debugMessengerInfo.pUserData = nullptr; // Nothing extra
 
+    }
+    
+    void VulkanEng::handleInstanceLayerLoading(const std::vector<const char*>& layersToLoad) {
+        uint32_t availableLayers = 0; // Variable to store all the available layers in the current system
+        vkEnumerateInstanceLayerProperties(&availableLayers, nullptr);  // Get How many layers are available in the current system
+        
+        VkLayerProperties currentLayersArr[availableLayers]; // Allocate a buffer to hold structures to each available layer
+        
+        vkEnumerateInstanceLayerProperties(&availableLayers, currentLayersArr); // Load to buffer the layers available on the system
+        
+        // Check if the provided layers are available to load
+        for (int i = 0; i < layersToLoad.size() && i < availableLayers; i++) {
+            if (utils::strcmp(currentLayersArr[i].layerName, layersToLoad[i]) == 0) {
+                printf("Unavailable layer in the current system. ----> %s\n", layersToLoad[i]);
+            } else {
+                m_valLayers.push_back(layersToLoad[i]);
+                m_valLayersCount++;
+            }
+        }
+
+        
     }
 
     VkResult VulkanEng::setupDebugger() {
