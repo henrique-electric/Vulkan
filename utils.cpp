@@ -15,10 +15,8 @@ namespace utils {
             return true;
         }
     }
-}
 
-namespace vkEng {
-    void VulkanEng::listAvailableExtensions() {
+    void listAvailableExtensions() {
        uint32_t extCount = 0;
        vkEnumerateInstanceExtensionProperties(nullptr, &extCount, nullptr);
 
@@ -30,7 +28,7 @@ namespace vkEng {
        }
     }
 
-    void VulkanEng::listAvailableLayers() {
+    void listAvailableLayers() {
        uint32_t layersCount = 0;
        vkEnumerateInstanceLayerProperties(&layersCount, nullptr);
 
