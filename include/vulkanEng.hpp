@@ -12,14 +12,11 @@
 
 // Project includes
 #include <utils.hpp>
+#include <types.hpp>
 
 namespace vkEng
 {
-    struct gpuDevice {
-        VkPhysicalDevice device;
-        VkPhysicalDeviceProperties properties;
-        VkPhysicalDeviceFeatures features;
-    };
+
 
     class VulkanEng
     {
