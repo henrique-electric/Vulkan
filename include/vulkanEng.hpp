@@ -1,11 +1,18 @@
 #pragma once
 #define DEBUG
 
+// Third Party includes
 #include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
+
+// std includes
 #include <cstdint>
 #include <vector>
 #include <iostream>
+
+// Project includes
+#include <utils.hpp>
+
 namespace vkEng
 {
     class VulkanEng
@@ -38,6 +45,7 @@ namespace vkEng
                                                             const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
         void setupDebugLayersAndExt();
+        int handleInstanceLayerLoading(const std::vector<const char*>& layersToLoad);
         void populateDebugMessengerStruct();
         VkResult setupDebugger();
 #endif
