@@ -59,6 +59,7 @@ namespace vkEng {
 
 // Load all validation layers and Instance extensions if in debug enviroment
 #ifdef DEBUG
+        listAvailableLayers();
         setupDebugLayersAndExt();
         populateDebugMessengerStruct();
 
@@ -69,7 +70,7 @@ namespace vkEng {
 #endif
 
          // Finally add the extensions list the extensions to be used by the instance
-         m_instanceInfo.enabledExtensionCount = m_instExts.size();
+         m_instanceInfo.enabledExtensionCount = static_cast<uint32_t>(m_instExts.size());
          m_instanceInfo.ppEnabledExtensionNames = m_instExts.data();
 
         if (vkCreateInstance(&m_instanceInfo, nullptr, &m_vkInstance) != VK_SUCCESS) {
