@@ -32,9 +32,9 @@ namespace vkEng
 
         uint32_t m_extCount{}; // number of extensions
         std::vector<const char*> m_instExts{}; // Extension list
-        uint32_t m_valLayersCount{0};
 
 #ifdef DEBUG
+        uint32_t m_valLayersCount{0};
         std::vector<const char*> m_valLayers{};
 
         VkDebugUtilsMessengerCreateInfoEXT m_debugMessengerInfo{};
@@ -45,7 +45,7 @@ namespace vkEng
                                                             const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
         void setupDebugLayersAndExt();
-        int handleInstanceLayerLoading(const std::vector<const char*>& layersToLoad);
+        void handleInstanceLayerLoading(const std::vector<const char*>& layersToLoad);
         void populateDebugMessengerStruct();
         VkResult setupDebugger();
 #endif
