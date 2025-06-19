@@ -1,7 +1,5 @@
 #include <vulkanEng.hpp>
 
-gpuDevice
-
 namespace vkEng {
 
     void VulkanEng::setupApplicationInfo(const char *appName, const char *engName) {
@@ -39,14 +37,24 @@ namespace vkEng {
         vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, cardsFound);
         
         gpuDevice newCardStruct{};
+
+        uint32_t cardQueueFamilyCount = 0;
         
         for (int i = 0; i < availableCards; i++) {
+
             vkGetPhysicalDeviceProperties(cardsFound[i], &cardsPropeties[i]);
             vkGetPhysicalDeviceFeatures(cardsFound[i], &cardsFeatures[i]);
             
+            vkGetPhysicalDeviceQueueFamilyProperties(cardsFound[i], &cardQueueFamilyCount, nullptr);
+            
+            std::vector<VkQueueFamilyProperties> cardQueueProperties(cardQueueFamilyCount);
+            vkGetPhysicalDeviceQueueFamilyProperties(cardsFound[i], &cardQueueFamilyCount, cardQueueProperties.data());
+
+
             newCardStruct.device = cardsFound[i];
             newCardStruct.properties = cardsPropeties[i];
             newCardStruct.features = cardsFeatures[i];
+            newCardStruct.queueProperties = std::move(cardQueueProperties);
             array.push_back(newCardStruct);
         }
     }

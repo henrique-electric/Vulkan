@@ -34,6 +34,7 @@ namespace vkEng
         VkApplicationInfo m_appInfo{}; // store basic info about the vulkan application
         VkInstanceCreateInfo m_instanceInfo{}; // Stores info used to create a vulkan instance
 
+
         uint32_t m_extCount{}; // number of extensions
         std::vector<const char*> m_instExts{}; // Extension list
         

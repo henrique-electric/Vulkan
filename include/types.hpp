@@ -6,5 +6,6 @@ namespace vkEng {
         VkPhysicalDevice device;
         VkPhysicalDeviceProperties properties;
         VkPhysicalDeviceFeatures features;
+        std::vector<VkQueueFamilyProperties> queueProperties;
     };
 }

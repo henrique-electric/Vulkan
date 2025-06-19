@@ -57,7 +57,24 @@ namespace utils {
         }
     }
 
-    void printCardsDetails(std::vector<gpuDevice> &cardArray) {
+    void printCardsDetails(std::vector<vkEng::gpuDevice> &cardArray) {
+        for (int i = 0; i < cardArray.size(); i++) {
+            printf("Card name ----> %s\n", cardArray[i].properties.deviceName);
+            printf("Card driver version ----> %d\n", cardArray[i].properties.driverVersion);
+            printf("Card API version ----> %d", cardArray[i].properties.apiVersion);
 
+            if (cardArray[i].queueProperties[i]. & VK_QUEUE_GRAPHICS_BIT)
+                printf("%s supports graphic commands\n", cardArray[i].properties.deviceName);
+
+            if (card.que & VK_QUEUE_COMPUTE_BIT)
+                printf("%s supports compute shaders\n", cardArray[i].properties.deviceName);
+
+            if (card.que & VK_QUEUE_TRANSFER_BIT)
+                printf("%s supports memory transfer commands\n", cardArray[i].properties.deviceName);
+
+            if (card.que & VK_QUEUE_SPARSE_BINDING_BIT)
+                printf("%s supports memory sparse operations\n", cardArray[i].properties.deviceName);
+            
+        }
     }
 }
