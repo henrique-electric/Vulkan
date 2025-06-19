@@ -18,7 +18,8 @@
             "includePath": [
                 "${workspaceFolder}\\include\\",
                 "C:\\SDKs\\Vulkan\\Include",
-                "C:\\SDKs\\glfw-3.4.bin.WIN64\\include"
+                "C:\\SDKs\\glfw-3.4.bin.WIN64\\include",
+                "${workspaceFolder}\\build\\_deps\\fmt-src\\include\\"
             ],
             "compilerPath": "C:\\Program Files\\LLVM\\bin\\clang++.exe",
             "cStandard": "c17",
