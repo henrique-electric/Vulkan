@@ -22,4 +22,5 @@ namespace utils {
     void listAvailableLayers();
     void listAvailableDevices(VkInstance& instance);
     void printCardsDetails(std::vector<vkEng::gpuDevice>& cardArray);
+    void listCardAvailableExt(vkEng::gpuDevice& card);
 }

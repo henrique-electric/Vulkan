@@ -72,4 +72,15 @@ namespace utils {
             }
         }
     }
+
+    void listCardAvailableExt(vkEng::gpuDevice& card) {
+        uint32_t extCount = 0;
+        vkEnumerateDeviceExtensionProperties(card.device, nullptr, &extCount, nullptr);
+        VkExtensionProperties extentions[extCount];
+        
+        vkEnumerateDeviceExtensionProperties(card.device, nullptr, &extCount, extentions);
+        for (int i = 0; i < extCount; i++)
+            printf("Found the device extension %s\n", extentions[i].extensionName);
+        
+    }
 }
