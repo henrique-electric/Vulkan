@@ -38,8 +38,9 @@ namespace vkEng
         uint32_t m_extCount{}; // number of extensions
         std::vector<const char*> m_instExts{}; // Extension list
         
-        int analyzeGpu(std::vector<gpuDevice>& physicalDevices);
+        int  analyzeGpu(std::vector<gpuDevice>& physicalDevices);
         void getGpuVector(std::vector<gpuDevice>& array);
+        void setupLogicalDevice();
 
 #ifdef DEBUG
         uint32_t m_valLayersCount{0};
