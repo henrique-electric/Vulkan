@@ -61,20 +61,14 @@ namespace utils {
         for (int i = 0; i < cardArray.size(); i++) {
             printf("Card name ----> %s\n", cardArray[i].properties.deviceName);
             printf("Card driver version ----> %d\n", cardArray[i].properties.driverVersion);
-            printf("Card API version ----> %d", cardArray[i].properties.apiVersion);
-
-            if (cardArray[i].queueProperties[i]. & VK_QUEUE_GRAPHICS_BIT)
-                printf("%s supports graphic commands\n", cardArray[i].properties.deviceName);
-
-            if (card.que & VK_QUEUE_COMPUTE_BIT)
-                printf("%s supports compute shaders\n", cardArray[i].properties.deviceName);
-
-            if (card.que & VK_QUEUE_TRANSFER_BIT)
-                printf("%s supports memory transfer commands\n", cardArray[i].properties.deviceName);
-
-            if (card.que & VK_QUEUE_SPARSE_BINDING_BIT)
-                printf("%s supports memory sparse operations\n", cardArray[i].properties.deviceName);
+            printf("Card API version ----> %d\n\n", cardArray[i].properties.apiVersion);
             
+            for (int j = 0; j < cardArray[i].queueProperties.size(); j++) {
+                printf("------Family %d------\n", j);
+                printf("%d available queues\n", cardArray[i].queueProperties[j].queueCount);
+                LIST_FAMILY_COMMAND_SUPPORT(cardArray[i].queueProperties[j]);
+                printf("----------------------\n\n");
+            }
         }
     }
 }
