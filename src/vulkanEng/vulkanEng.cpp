@@ -62,6 +62,7 @@ namespace vkEng {
     void VulkanEng::setupGraphicsCard() {
         std::vector<gpuDevice> gpus;
         getGpuVector(gpus);
+        utils::printCardsDetails(gpus);
     }
 
     VulkanEng::VulkanEng(const char *appName, const char *engName) {

@@ -58,6 +58,7 @@ namespace utils {
     }
 
     void printCardsDetails(std::vector<vkEng::gpuDevice> &cardArray) {
+        puts("\nCards infos\n");
         for (int i = 0; i < cardArray.size(); i++) {
             printf("Card name ----> %s\n", cardArray[i].properties.deviceName);
             printf("Card driver version ----> %d\n", cardArray[i].properties.driverVersion);
