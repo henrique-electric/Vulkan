@@ -26,10 +26,15 @@ namespace win {
 #ifdef DEBUG
        cleanDebugRes();
 #endif
+        vkDestroyDevice(m_graphicsCard.logicalInstance, nullptr);
+        puts("Destroyed vulkan logical device\n");
 
         vkDestroyInstance(m_vkInstance, nullptr);
+        puts("Destroyed vulkan instace");
+
         glfwDestroyWindow(m_glfwWin);
         glfwTerminate();
+        puts("Finished glfw\n");
     }
 
     void Window::run() {
