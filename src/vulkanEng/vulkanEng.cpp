@@ -133,7 +133,12 @@ namespace vkEng {
 
 // Load all validation layers and Instance extensions if in debug enviroment
 #ifdef DEBUG
-        setupDebugLayersAndExt();
+        std::vector<const char*> instanceLayers;
+        std::vector<const char*> gpuLayers;
+        instanceLayers.push_back("hi");
+        gpuLayers.push_back("test");
+        
+        setupDebugLayersAndExt(instanceLayers, gpuLayers);
         populateDebugMessengerStruct();
 
         m_instanceInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &m_debugMessengerInfo;

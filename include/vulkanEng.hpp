@@ -46,6 +46,7 @@ namespace vkEng
 #ifdef DEBUG
         uint32_t m_valLayersCount{0};
         std::vector<const char*> m_valLayers{};
+        std::vector<const char*> m_gpuValLayers{};
 
         VkDebugUtilsMessengerCreateInfoEXT m_debugMessengerInfo{};
 
@@ -54,7 +55,7 @@ namespace vkEng
                                                             VkDebugUtilsMessageTypeFlagsEXT messageType,
                                                             const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
-        void setupDebugLayersAndExt();
+        void setupDebugLayersAndExt(std::vector<const char*>& instanceLayers, std::vector<const char*>& gpuLayers);
         void handleInstanceLayerLoading(const std::vector<const char*>& layersToLoad);
         void populateDebugMessengerStruct();
         VkResult setupDebugger();

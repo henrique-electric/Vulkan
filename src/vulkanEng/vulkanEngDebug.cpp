@@ -19,11 +19,11 @@ namespace vkEng {
         return VK_FALSE;
     }
 
-    void VulkanEng::setupDebugLayersAndExt() {
+    void VulkanEng::setupDebugLayersAndExt(std::vector<const char*>& instanceLayers, std::vector<const char*>& gpuLayers) {
         m_instExts.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME); // load the extension for debbugin
 
         //Load basic validation layers
-        handleInstanceLayerLoading(std::vector<const char*>({"Test", "Hi"}));
+        handleInstanceLayerLoading(instanceLayers);
 
         m_instanceInfo.enabledLayerCount = static_cast<uint32_t>(m_valLayers.size());
         m_instanceInfo.ppEnabledLayerNames = m_valLayers.data();
@@ -57,8 +57,7 @@ namespace vkEng {
             if (utils::strcmp(currentLayersArr[i].layerName, layersToLoad[i]) == 0) {
                 printf("Unavailable layer in the current system. ----> %s\n", layersToLoad[i]);
             } else {
-                m_valLayers.push_back(layersToLoad[i]);
-                m_valLayersCount++;
+                m_valLayers = std::move(layersToLoad);
             }
         }
 
