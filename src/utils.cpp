@@ -83,4 +83,11 @@ namespace utils {
             printf("Found the device extension %s\n", extentions[i].extensionName);
         
     }
+
+    // TODO
+    void listDeviceFeatures(const vkEng::gpuDevice& card) {
+        VkPhysicalDeviceFeatures features{};
+        vkGetPhysicalDeviceFeatures(card.device, &features);
+
+    }
 }
