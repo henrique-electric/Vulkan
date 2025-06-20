@@ -16,6 +16,7 @@ find_package(Vulkan REQUIRED)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
+option(BUILD_SHARED_LIBS "" off)
 
 if(APPLE)
     find_library(MOLTENVK_LIBRARY MoltenVK PATHS ${Vulkan_LIBRARY})
