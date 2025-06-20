@@ -9,4 +9,9 @@ namespace vkEng {
         std::vector<VkQueueFamilyProperties> queueProperties;
         VkDevice logicalInstance;
     };
+
+    struct VkDeviceQueueCreateInfoMod {
+        VkDeviceQueueCreateInfo queueInfo;
+        float queuePriority;
+    };
 }
