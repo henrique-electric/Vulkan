@@ -29,7 +29,6 @@ namespace vkEng {
     void VulkanEng::getGpuVector(std::vector<gpuDevice> &array) {
         uint32_t availableCards = 0;
         vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, nullptr);
-        
         VkPhysicalDevice cardsFound[availableCards];
         VkPhysicalDeviceProperties cardsPropeties[availableCards];
         VkPhysicalDeviceFeatures cardsFeatures[availableCards];
@@ -62,12 +61,53 @@ namespace vkEng {
     void VulkanEng::setupGraphicsCard() {
         std::vector<gpuDevice> gpus;
         getGpuVector(gpus);
-        utils::printCardsDetails(gpus);
-        utils::listCardAvailableExt(m_graphicsCard);
+        analyzeGpu(gpus);
+        setupLogicalDevice();
     }
     
     void VulkanEng::setupLogicalDevice() {
+        VkDeviceQueueCreateInfoMod logicalDeviceQueue{};
+        VkDeviceCreateInfo logicalDeviceInfo{};
+        setupQueues(logicalDeviceQueue, m_graphicsCard);
+
+        logicalDeviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+        const char* extensions[] = {"VK_KHR_swapchain"}; // Load a simple device extension
+        logicalDeviceInfo.ppEnabledExtensionNames = extensions;
+        logicalDeviceInfo.enabledExtensionCount = 1;
+
+        /*
+            TODO
+            setup debug layers
+        */
+        logicalDeviceInfo.enabledLayerCount = 0;
+        logicalDeviceInfo.ppEnabledLayerNames = nullptr;
+        //
+
+        logicalDeviceInfo.pEnabledFeatures = &m_graphicsCard.features;
+        logicalDeviceInfo.pQueueCreateInfos = &logicalDeviceQueue.queueInfo;
+        logicalDeviceInfo.queueCreateInfoCount = 1; // just one queue family for now
         
+        if (vkCreateDevice(m_graphicsCard.device, &logicalDeviceInfo, nullptr, &m_graphicsCard.logicalInstance) != VK_SUCCESS)
+            throw std::runtime_error("Error creating a logical device");
+
+    }
+
+    void VulkanEng::setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, const gpuDevice& card) {
+        // Run throught the queue families searching for a queue that uses all these 3 command processing
+        for (uint32_t familyIndex = 0; familyIndex < card.queueProperties.size(); familyIndex++) {
+            if ((card.queueProperties[familyIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (card.queueProperties[familyIndex].queueFlags & VK_QUEUE_COMPUTE_BIT)) {
+ 
+                queueCreationInfo.queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+                queueCreationInfo.queueInfo.queueFamilyIndex = familyIndex;
+                queueCreationInfo.queueInfo.queueCount = 1;
+                queueCreationInfo.queuePriority = 1.0f;
+                queueCreationInfo.queueInfo.pQueuePriorities = &queueCreationInfo.queuePriority;
+                return;
+            }
+        }
+        
+        throw std::runtime_error("No required queue family found");
     }
 
     VulkanEng::VulkanEng(const char *appName, const char *engName) {
