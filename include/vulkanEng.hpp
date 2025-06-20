@@ -41,6 +41,7 @@ namespace vkEng
         int  analyzeGpu(std::vector<gpuDevice>& physicalDevices);
         void getGpuVector(std::vector<gpuDevice>& array);
         void setupLogicalDevice();
+        void setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, const gpuDevice& card);
 
 #ifdef DEBUG
         uint32_t m_valLayersCount{0};
