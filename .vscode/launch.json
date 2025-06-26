@@ -16,7 +16,7 @@
       "preLaunchTask": "build-project"
     },
     {
-      "name": "Debug Macos and Linux",
+      "name": "Debug Macos",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/MyVulkanApp",
@@ -24,6 +24,17 @@
       "preLaunchTask": "build-project",
       "cwd": "${workspaceFolder}"
     },
+    {
+      "name": "Debug Linux",
+      "type": "cppdbg",
+      "request": "launch",
+      "preLaunchTask": "build-project",
+      "program": "${workspaceFolder}/build/MyVulkanApp",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "cwd": ".",
+
+    }
   ]
 }
 
