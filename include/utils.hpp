@@ -21,7 +21,7 @@ namespace utils {
     void listAvailableExtensions();
     void listAvailableLayers();
     void listAvailableDevices(VkInstance& instance);
-    void printCardsDetails(std::vector<vkEng::gpuDevice>& cardArray);
+    void printCardDetails(vkEng::gpuDevice& card); // Should be used when the gpu device has been setup
     void listCardAvailableExt(vkEng::gpuDevice& card);
     void listDeviceFeatures(const vkEng::gpuDevice& card);
 }

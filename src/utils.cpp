@@ -57,19 +57,13 @@ namespace utils {
         }
     }
 
-    void printCardsDetails(std::vector<vkEng::gpuDevice> &cardArray) {
-        puts("\nCards infos\n");
-        for (int i = 0; i < cardArray.size(); i++) {
-            printf("Card name ----> %s\n", cardArray[i].properties.deviceName);
-            printf("Card driver version ----> %d\n", cardArray[i].properties.driverVersion);
-            printf("Card API version ----> %d\n\n", cardArray[i].properties.apiVersion);
-            
-            for (int j = 0; j < cardArray[i].queueProperties.size(); j++) {
-                printf("------Family %d------\n", j);
-                printf("%d available queues\n", cardArray[i].queueProperties[j].queueCount);
-                LIST_FAMILY_COMMAND_SUPPORT(cardArray[i].queueProperties[j]);
-                printf("----------------------\n\n");
-            }
+    void printCardDetails(vkEng::gpuDevice &card) {
+        printf("Card name: %s\n", card.properties.deviceName);
+        printf("Card driver version: %d\n", card.properties.driverVersion);
+        printf("Card API version: %d\n", card.properties.apiVersion);
+        
+        for(auto& family : card.queueProperties) {
+          LIST_FAMILY_COMMAND_SUPPORT(family);
         }
     }
 
