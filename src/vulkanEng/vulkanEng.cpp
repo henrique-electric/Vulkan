@@ -90,14 +90,16 @@ namespace vkEng {
         
         if (vkCreateDevice(m_graphicsCard.device, &logicalDeviceInfo, nullptr, &m_graphicsCard.logicalInstance) != VK_SUCCESS)
             throw std::runtime_error("Error creating a logical device");
-
+        
+    
     }
 
-    void VulkanEng::setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, const gpuDevice& card) {
+    void VulkanEng::setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, gpuDevice& card) {
         // Run throught the queue families searching for a queue that uses all these 3 command processing
         for (uint32_t familyIndex = 0; familyIndex < card.queueProperties.size(); familyIndex++) {
             if ((card.queueProperties[familyIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (card.queueProperties[familyIndex].queueFlags & VK_QUEUE_COMPUTE_BIT)) {
- 
+                card.queueFamily = static_cast<uint8_t>(familyIndex); // get the index of the family 
+
                 queueCreationInfo.queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
                 queueCreationInfo.queueInfo.queueFamilyIndex = familyIndex;
                 queueCreationInfo.queueInfo.queueCount = 1;
