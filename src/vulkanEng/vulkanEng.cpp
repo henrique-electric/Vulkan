@@ -63,6 +63,7 @@ namespace vkEng {
         getGpuVector(gpus);
         analyzeGpu(gpus);
         setupLogicalDevice();
+        utils::printCardDetails(m_graphicsCard);
     }
     
     void VulkanEng::setupLogicalDevice() {
@@ -91,7 +92,8 @@ namespace vkEng {
         if (vkCreateDevice(m_graphicsCard.device, &logicalDeviceInfo, nullptr, &m_graphicsCard.logicalInstance) != VK_SUCCESS)
             throw std::runtime_error("Error creating a logical device");
         
-    
+        vkGetDeviceQueue(m_graphicsCard.logicalInstance, m_graphicsCard.queueFamily, 0, &m_graphicsCard.queueInterface);
+        puts("Got the queue interface\n");
     }
 
     void VulkanEng::setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, gpuDevice& card) {
