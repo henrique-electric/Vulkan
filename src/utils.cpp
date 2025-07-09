@@ -61,9 +61,12 @@ namespace utils {
         printf("Card name: %s\n", card.properties.deviceName);
         printf("Card driver version: %d\n", card.properties.driverVersion);
         printf("Card API version: %d\n", card.properties.apiVersion);
-        
-        for(auto& family : card.queueProperties) {
-          LIST_FAMILY_COMMAND_SUPPORT(family);
+       
+        for (int familyCount = 0; familyCount < card.queueProperties.size(); familyCount++) {
+            printf("\n\n---------Family %d--------\n", familyCount);
+            printf("Family has %d queues\n", card.queueProperties[familyCount].queueCount);
+            LIST_FAMILY_COMMAND_SUPPORT(card.queueProperties[familyCount]); 
+            puts("\n\n"); 
         }
     }
 
