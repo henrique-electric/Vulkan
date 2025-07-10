@@ -64,6 +64,7 @@ namespace vkEng {
         analyzeGpu(gpus);
         setupLogicalDevice();
         utils::printCardDetails(m_graphicsCard);
+        utils::listCardAvailableExt(m_graphicsCard);
     }
     
     void VulkanEng::setupLogicalDevice() {

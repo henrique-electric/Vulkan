@@ -59,7 +59,7 @@ namespace utils {
 
     void printCardDetails(vkEng::gpuDevice &card) {
         printf("Card name: %s\n", card.properties.deviceName);
-        printf("Card driver version: %d\n", card.properties.driverVersion);
+        printf("Card driver version: %u\n", card.properties.driverVersion);
         printf("Card API version: %d\n", card.properties.apiVersion);
        
         for (int familyCount = 0; familyCount < card.queueProperties.size(); familyCount++) {
