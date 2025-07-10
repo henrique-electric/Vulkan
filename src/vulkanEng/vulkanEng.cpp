@@ -113,6 +113,14 @@ namespace vkEng {
         
         throw std::runtime_error("No required queue family found");
     }
+    
+    void VulkanEng::setupWindowSurface(GLFWwindow *window) {
+        if (glfwCreateWindowSurface(m_vkInstance, window, nullptr, &m_vulkanSurface) != VK_SUCCESS) {
+          std::runtime_error("Failed to create the vulkan window surface");
+        }
+
+        puts("Created the Vulkan window surface");
+    }
 
     VulkanEng::VulkanEng(const char *appName, const char *engName) {
 

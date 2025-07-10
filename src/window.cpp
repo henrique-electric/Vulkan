@@ -17,7 +17,7 @@ namespace win {
             throw std::runtime_error("Error to create GLFW window"); // error creating the window
 
         glfwSetKeyCallback(m_glfwWin, windowKeyHandler); // Set the default handler for key inputs
-    }
+        setupWindowSurface(m_glfwWin);        }
 
     // Object descontructor, frees the glfw resources and deletes vulkan instance
     Window::~Window() {
@@ -28,9 +28,12 @@ namespace win {
 #endif
         vkDestroyDevice(m_graphicsCard.logicalInstance, nullptr);
         puts("Destroyed vulkan logical device\n");
+        
+        vkDestroySurfaceKHR(m_vkInstance, m_vulkanSurface, nullptr);
+        puts("Destroyed vulkan surface\n");
 
         vkDestroyInstance(m_vkInstance, nullptr);
-        puts("Destroyed vulkan instace");
+        puts("Destroyed vulkan instace\n");
 
         glfwDestroyWindow(m_glfwWin);
         glfwTerminate();

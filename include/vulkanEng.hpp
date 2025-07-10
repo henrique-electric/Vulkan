@@ -24,6 +24,10 @@ namespace vkEng
         VkInstance m_vkInstance{}; // Stores the vulkan instance itself
         VkSurfaceKHR m_vulkanSurface{};
         gpuDevice  m_graphicsCard{};
+        
+        
+        // Protected functions
+        void setupWindowSurface(GLFWwindow *window);
 
 #ifdef DEBUG
         VkDebugUtilsMessengerEXT m_debugMessenger{};
