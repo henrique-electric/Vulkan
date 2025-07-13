@@ -62,11 +62,40 @@ namespace vkEng {
         std::vector<gpuDevice> gpus;
         getGpuVector(gpus);
         analyzeGpu(gpus);
+        validateCardExtensions(m_graphicsCard);
         setupLogicalDevice();
         utils::printCardDetails(m_graphicsCard);
         utils::listCardAvailableExt(m_graphicsCard);
     }
     
+
+    void VulkanEng::validateCardExtensions(vkEng::gpuDevice& card) {
+        uint32_t deviceExtCount = 0;
+        vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr, 
+                                            &deviceExtCount, nullptr);
+
+        VkExtensionProperties deviceExtensions[deviceExtCount];
+        vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr, &deviceExtCount,
+                                            deviceExtensions);
+
+        for (uint32_t count = 0; count < deviceExtCount; count++) {
+            if (strcmp(deviceExtensions[count].extensionName, "VK_KHR_swapchain") == 0)
+                std::runtime_error("Vulkan swapchain not available");
+        }
+    }
+
+
+    void VulkanEng::validateCardSwapChain() {
+      vkEng::SwapChainProperties properties{};
+
+      vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_graphicsCard.device, m_vulkanSurface, 
+                                                &properties.capabilities);
+      
+      uint32_t surfaceFormatCount = 0;
+      
+      vkGetPhysicalDeviceSurfaceFormatsKHR(m_graphicsCard.device, m_vulkanSurface, &surfaceFormatCount, nullptr );
+    }
+
     void VulkanEng::setupLogicalDevice() {
         VkDeviceQueueCreateInfoMod logicalDeviceQueue{};
         VkDeviceCreateInfo logicalDeviceInfo{};

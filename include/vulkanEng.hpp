@@ -69,6 +69,8 @@ namespace vkEng
         void setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, gpuDevice& card);
         void setupApplicationInfo(const char *appName, const char *engName);
         void setupGraphicsCard();
+        void validateCardExtensions(vkEng::gpuDevice& card);
+        void validateCardSwapChain();
 
     public:
         VulkanEng(const char *appName, const char *engName);
