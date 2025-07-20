@@ -1,7 +1,8 @@
+#include <sys/types.h>
 #include <vulkanEng.hpp>
 
 namespace vkEng {
-
+    u_int32_t
     void VulkanEng::setupApplicationInfo(const char *appName, const char *engName) {
          m_appInfo.sType  = VK_STRUCTURE_TYPE_APPLICATION_INFO;
          m_appInfo.pEngineName  = engName;
@@ -11,9 +12,9 @@ namespace vkEng {
          m_appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
          m_appInfo.pNext = nullptr;
     }
-    
+
     int VulkanEng::analyzeGpu(std::vector<gpuDevice>& physicalDevices) {
-        
+
         // Run throught an array with all the GPUs
         for (int i = 0; i < physicalDevices.size(); i++) {
             if (physicalDevices[i].properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
@@ -21,7 +22,7 @@ namespace vkEng {
                 return i; // Return the index of the GPU in the array
             }
         }
-        
+
         m_graphicsCard = std::move(physicalDevices[0]); // There is no discrete GPU, pick the first one found
         return 0;
     }
@@ -32,20 +33,20 @@ namespace vkEng {
         VkPhysicalDevice cardsFound[availableCards];
         VkPhysicalDeviceProperties cardsPropeties[availableCards];
         VkPhysicalDeviceFeatures cardsFeatures[availableCards];
-        
+
         vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, cardsFound);
-        
+
         gpuDevice newCardStruct{};
 
         uint32_t cardQueueFamilyCount = 0;
-        
+
         for (int i = 0; i < availableCards; i++) {
 
             vkGetPhysicalDeviceProperties(cardsFound[i], &cardsPropeties[i]);
             vkGetPhysicalDeviceFeatures(cardsFound[i], &cardsFeatures[i]);
-            
+
             vkGetPhysicalDeviceQueueFamilyProperties(cardsFound[i], &cardQueueFamilyCount, nullptr);
-            
+
             std::vector<VkQueueFamilyProperties> cardQueueProperties(cardQueueFamilyCount);
             vkGetPhysicalDeviceQueueFamilyProperties(cardsFound[i], &cardQueueFamilyCount, cardQueueProperties.data());
 
@@ -67,11 +68,11 @@ namespace vkEng {
         utils::printCardDetails(m_graphicsCard);
         utils::listCardAvailableExt(m_graphicsCard);
     }
-    
+
 
     void VulkanEng::validateCardExtensions(vkEng::gpuDevice& card) {
         uint32_t deviceExtCount = 0;
-        vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr, 
+        vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr,
                                             &deviceExtCount, nullptr);
 
         VkExtensionProperties deviceExtensions[deviceExtCount];
@@ -88,11 +89,11 @@ namespace vkEng {
     void VulkanEng::validateCardSwapChain() {
       vkEng::SwapChainProperties properties{};
 
-      vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_graphicsCard.device, m_vulkanSurface, 
+      vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_graphicsCard.device, m_vulkanSurface,
                                                 &properties.capabilities);
-      
+
       uint32_t surfaceFormatCount = 0;
-      
+
       vkGetPhysicalDeviceSurfaceFormatsKHR(m_graphicsCard.device, m_vulkanSurface, &surfaceFormatCount, nullptr );
     }
 
@@ -118,10 +119,10 @@ namespace vkEng {
         logicalDeviceInfo.pEnabledFeatures = &m_graphicsCard.features;
         logicalDeviceInfo.pQueueCreateInfos = &logicalDeviceQueue.queueInfo;
         logicalDeviceInfo.queueCreateInfoCount = 1; // just one queue family for now
-        
+
         if (vkCreateDevice(m_graphicsCard.device, &logicalDeviceInfo, nullptr, &m_graphicsCard.logicalInstance) != VK_SUCCESS)
             throw std::runtime_error("Error creating a logical device");
-        
+
         vkGetDeviceQueue(m_graphicsCard.logicalInstance, m_graphicsCard.queueFamily, 0, &m_graphicsCard.queueInterface);
         puts("Got the queue interface\n");
     }
@@ -130,7 +131,7 @@ namespace vkEng {
         // Run throught the queue families searching for a queue that uses all these 3 command processing
         for (uint32_t familyIndex = 0; familyIndex < card.queueProperties.size(); familyIndex++) {
             if ((card.queueProperties[familyIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (card.queueProperties[familyIndex].queueFlags & VK_QUEUE_COMPUTE_BIT)) {
-                card.queueFamily = static_cast<uint8_t>(familyIndex); // get the index of the family 
+                card.queueFamily = static_cast<uint8_t>(familyIndex); // get the index of the family
 
                 queueCreationInfo.queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
                 queueCreationInfo.queueInfo.queueFamilyIndex = familyIndex;
@@ -140,10 +141,10 @@ namespace vkEng {
                 return;
             }
         }
-        
+
         throw std::runtime_error("No required queue family found");
     }
-    
+
     void VulkanEng::setupWindowSurface(GLFWwindow *window) {
         if (glfwCreateWindowSurface(m_vkInstance, window, nullptr, &m_vulkanSurface) != VK_SUCCESS) {
           std::runtime_error("Failed to create the vulkan window surface");
@@ -179,7 +180,7 @@ namespace vkEng {
         std::vector<const char*> gpuLayers;
         instanceLayers.push_back("hi");
         gpuLayers.push_back("test");
-        
+
         setupDebugLayersAndExt(instanceLayers, gpuLayers);
         populateDebugMessengerStruct();
 
@@ -196,7 +197,7 @@ namespace vkEng {
         if (vkCreateInstance(&m_instanceInfo, nullptr, &m_vkInstance) != VK_SUCCESS) {
             throw std::runtime_error("Error to init a vulkan instance");
         }
-        
+
 // Setup the messenger debugger if in debug enviroment
 #ifdef DEBUG
          setupDebugger();
