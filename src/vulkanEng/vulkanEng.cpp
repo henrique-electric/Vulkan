@@ -2,7 +2,6 @@
 #include <vulkanEng.hpp>
 
 namespace vkEng {
-    u_int32_t
     void VulkanEng::setupApplicationInfo(const char *appName, const char *engName) {
          m_appInfo.sType  = VK_STRUCTURE_TYPE_APPLICATION_INFO;
          m_appInfo.pEngineName  = engName;
@@ -93,9 +92,40 @@ namespace vkEng {
                                                 &properties.capabilities);
 
       uint32_t surfaceFormatCount = 0;
-
       vkGetPhysicalDeviceSurfaceFormatsKHR(m_graphicsCard.device, m_vulkanSurface, &surfaceFormatCount, nullptr );
+      
+      uint32_t presentationModesCount = 0;
+      vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface, &presentationModesCount, nullptr);
+
+      vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface,  &presentationModesCount, properties.presentationModes.data());
+
+      if (properties.presentationModes.empty() || properties.formats.empty())
+          std::runtime_error("Surface has not the necessary properties to use swap chain");
+      
     }
+
+
+    VkSurfaceFormatKHR VulkanEng::pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats) {
+        // Pick the best desired surface format if available
+        for (auto& format : formats) {
+           if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+              return format;
+        }
+
+        return formats[0]; // Pick the first one if not found the desired one
+    }
+
+
+    VkPresentModeKHR VulkanEng::pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes) {
+      for(auto& mode : modes) {
+          if (mode == VK_PRESENT_MODE_MAILBOX_KHR)
+            return mode; // Pick the mailbox present mode if available, this mode does make the application to wait if the buffers are full
+
+      }
+
+      return VK_PRESENT_MODE_FIFO_KHR; // Pick the classic dual buffer image presentation
+    }
+
 
     void VulkanEng::setupLogicalDevice() {
         VkDeviceQueueCreateInfoMod logicalDeviceQueue{};

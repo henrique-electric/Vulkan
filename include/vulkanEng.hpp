@@ -71,6 +71,8 @@ namespace vkEng
         void setupGraphicsCard();
         void validateCardExtensions(vkEng::gpuDevice& card);
         void validateCardSwapChain();
+        VkSurfaceFormatKHR pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats);
+        VkPresentModeKHR pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes);
 
     public:
         VulkanEng(const char *appName, const char *engName);
