@@ -22,6 +22,24 @@ if(APPLE)
     find_library(MOLTENVK_LIBRARY MoltenVK PATHS ${Vulkan_LIBRARY})
 endif()
 
+set(IMGUI_CORE 
+    # ======== Backends =========
+    external/imgui/backends/imgui_impl_glfw.cpp
+    external/imgui/backends/imgui_impl_vulkan.cpp
+    # ===========================
+
+    external/imgui/imgui_draw.cpp
+    external/imgui/imgui_tables.cpp
+    external/imgui/imgui_widgets.cpp
+    external/imgui/imgui.cpp
+)
+
+add_library(imgui ${IMGUI_CORE})
+target_include_directories(imgui PUBLIC external/imgui)
+target_include_directories(imgui PUBLIC external/imgui/backends)
+target_include_directories(imgui PUBLIC /opt/homebrew/include/)
+target_link_libraries(imgui glfw)
+
 # Include and link
 add_executable(MyVulkanApp src/main.cpp src/window.cpp src/vulkanEng/vulkanEng.cpp
         src/vulkanEng/vulkanEngDebug.cpp src/utils.cpp)
@@ -31,5 +49,4 @@ target_include_directories(MyVulkanApp PRIVATE ${Vulkan_INCLUDE_DIRS})
 target_include_directories(MyVulkanApp PUBLIC ./include/)
 target_include_directories(MyVulkanApp PUBLIC ./build/_deps/fmt-src/include/)
 
-target_link_libraries(MyVulkanApp PRIVATE ${Vulkan_LIBRARIES})
-target_link_libraries(MyVulkanApp PRIVATE glfw)
+target_link_libraries(MyVulkanApp PRIVATE ${Vulkan_LIBRARIES} glfw imgui)
