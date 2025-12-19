@@ -28,6 +28,12 @@ namespace vkEng
         
         // Protected functions
         void setupWindowSurface(GLFWwindow *window);
+        inline VkDevice getEngineLogicalDevice(void) {return this->m_graphicsCard.logicalInstance;};
+        inline VkInstance getEngineVulkanInstance(void) {return this->m_vkInstance;};
+        inline VkSurfaceKHR getEngineVulkanSurface(void) {return this->m_vulkanSurface;};
+        inline VkQueue getEngineQueueHandler(void) {return this->m_graphicsCard.queueInterface;};
+        
+        
 
 #ifdef DEBUG
         VkDebugUtilsMessengerEXT m_debugMessenger{};
@@ -71,6 +77,8 @@ namespace vkEng
         void setupGraphicsCard();
         void validateCardExtensions(vkEng::gpuDevice& card);
         void validateCardSwapChain();
+        void initSwapChain();
+        void pickChainExtent(swapChainFrameDimensions &dimensionsStruct);
         VkSurfaceFormatKHR pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats);
         VkPresentModeKHR pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes);
 
