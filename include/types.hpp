@@ -18,9 +18,14 @@ namespace vkEng {
         float queuePriority;
     };
 
+    struct swapChainFrameDimensions {
+        uint32_t width;
+        uint32_t height;
+    };
+
     struct SwapChainProperties {
         VkSurfaceCapabilitiesKHR capabilities;   // capabilities of the surface
         std::vector<VkSurfaceFormatKHR> formats; // formats supported by the surface
-        std::vector<VkPresentModeKHR> presentationModes; // Presentation mode that the surface has support to 
+        std::vector<VkPresentModeKHR> presentationModes; // Presentation mode that the surface has support to
     };
 }
