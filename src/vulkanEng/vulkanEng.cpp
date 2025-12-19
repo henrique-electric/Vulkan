@@ -2,6 +2,8 @@
 #include <vulkanEng.hpp>
 
 namespace vkEng {
+
+    // setup basic info of the vulkan application
     void VulkanEng::setupApplicationInfo(const char *appName, const char *engName) {
          m_appInfo.sType  = VK_STRUCTURE_TYPE_APPLICATION_INFO;
          m_appInfo.pEngineName  = engName;
@@ -12,6 +14,9 @@ namespace vkEng {
          m_appInfo.pNext = nullptr;
     }
 
+    /*
+        Analyse all the gpus found searching for a discrete GPU, if none is found, we use the integrated GPU
+     */
     int VulkanEng::analyzeGpu(std::vector<gpuDevice>& physicalDevices) {
 
         // Run throught an array with all the GPUs
@@ -26,6 +31,10 @@ namespace vkEng {
         return 0;
     }
 
+
+    /*
+        Get a vector with all GPUs detected on the system
+     */
     void VulkanEng::getGpuVector(std::vector<gpuDevice> &array) {
         uint32_t availableCards = 0;
         vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, nullptr);
@@ -183,16 +192,30 @@ namespace vkEng {
         puts("Created the Vulkan window surface");
     }
 
+    void VulkanEng::pickChainExtent(swapChainFrameDimensions &dimensionsStruct) {
+        
+    }
+
+    void VulkanEng::initSwapChain() {
+        SwapChainProperties chainProperties;
+        
+        VkSwapchainCreateInfoKHR chainInfo = {
+            .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+            .presentMode =  this->pickSwapPresentMode(chainProperties.presentationModes),
+            .surface = this->m_vulkanSurface,
+        };
+    }
+
     VulkanEng::VulkanEng(const char *appName, const char *engName) {
 
        setupApplicationInfo(appName, engName); // Init struct containing the info about the application
-
 
         // Get the vulkan instances required by GLFW
         const char **extensions = glfwGetRequiredInstanceExtensions(&m_extCount);
 
         for (int i = 0; i < m_extCount; i++)
             m_instExts.emplace_back(std::move(extensions[i]));
+            
 
 #ifdef __APPLE__
         m_instExts.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
