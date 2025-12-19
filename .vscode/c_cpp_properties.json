@@ -3,10 +3,10 @@
         {
             "name": "Macos & Linux",
             "includePath": [
-                "${workspaceFolder}/include",
+                "${workspaceFolder}/include/**",
                 "/usr/local/include",
                 "/opt/homebrew/include",
-                "${workspaceFolder}/build/_deps/glfw-src/include"
+                "${workspaceFolder}/build/_deps/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",
@@ -20,7 +20,9 @@
                 "${workspaceFolder}\\include\\",
                 "C:\\SDKs\\Vulkan\\Include",
                 "C:\\SDKs\\glfw-3.4.bin.WIN64\\include",
-                "${workspaceFolder}\\build\\_deps\\fmt-src\\include\\"
+                "${workspaceFolder}\\build\\_deps\\fmt-src\\include\\",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/build/_deps/glfw-src/include"
             ],
             "compilerPath": "C:\\Program Files\\LLVM\\bin\\clang++.exe",
             "cStandard": "c17",
