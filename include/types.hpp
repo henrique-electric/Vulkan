@@ -11,6 +11,8 @@ namespace vkEng {
 
         uint8_t queueFamily; // In this project i'll be only using one queue, which one that has all the 3 main command processing capabilites 
         VkQueue queueInterface; // interface with the queue family being used
+        swapChainFrameDimensions swapFrameDimensions; // Dimensions of the swapChain frame buffer
+        SwapChainProperties swapChainProps;
     };
 
     struct VkDeviceQueueCreateInfoMod {
@@ -19,8 +21,8 @@ namespace vkEng {
     };
 
     struct swapChainFrameDimensions {
-        uint32_t width;
-        uint32_t height;
+        int width;
+        int height;
     };
 
     struct SwapChainProperties {
