@@ -94,28 +94,36 @@ namespace vkEng {
     }
 
 
+    // Get basic infos about the swap chain support
     void VulkanEng::validateCardSwapChain() {
-      vkEng::SwapChainProperties properties{};
 
+      // Get surface info
       vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_graphicsCard.device, m_vulkanSurface,
-                                                &properties.capabilities);
+                                                &m_graphicsCard.swapChainProps.capabilities);
 
+        
       uint32_t surfaceFormatCount = 0;
       vkGetPhysicalDeviceSurfaceFormatsKHR(m_graphicsCard.device, m_vulkanSurface, &surfaceFormatCount, nullptr );
+      vkGetPhysicalDeviceSurfaceFormatsKHR(m_graphicsCard.device, m_vulkanSurface, &surfaceFormatCount, 
+                                                                                   m_graphicsCard.swapChainProps.formats.data());
       
       uint32_t presentationModesCount = 0;
       vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface, &presentationModesCount, nullptr);
 
-      vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface,  &presentationModesCount, properties.presentationModes.data());
+      vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface,  &presentationModesCount, 
+                                                                                         m_graphicsCard.swapChainProps.presentationModes.data());;
 
-      if (properties.presentationModes.empty() || properties.formats.empty())
+      if (m_graphicsCard.swapChainProps.presentationModes.empty() || m_graphicsCard.swapChainProps.formats.empty())
           std::runtime_error("Surface has not the necessary properties to use swap chain");
       
     }
 
 
-    VkSurfaceFormatKHR VulkanEng::pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats) {
+    VkSurfaceFormatKHR VulkanEng::pickSwapFormat() {
         // Pick the best desired surface format if available
+
+        std::vector<VkSurfaceFormatKHR> &formats = m_graphicsCard.swapChainProps.formats;
+
         for (auto& format : formats) {
            if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
               return format;
@@ -192,29 +200,51 @@ namespace vkEng {
         puts("Created the Vulkan window surface");
     }
 
-    void VulkanEng::pickChainExtent(swapChainFrameDimensions &dimensionsStruct) {
-        
-    }
-
     void VulkanEng::initSwapChain() {
-        SwapChainProperties chainProperties;
+        validateCardSwapChain();
+        SwapChainProperties &props = m_graphicsCard.swapChainProps;
         
         VkSwapchainCreateInfoKHR chainInfo = {
-            .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-            .presentMode =  this->pickSwapPresentMode(chainProperties.presentationModes),
-            .surface = this->m_vulkanSurface,
+            .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,  // Say that this structure is related to the creation of swapchain
+
+            .presentMode =  this->pickSwapPresentMode(props.presentationModes), // pick the best present mode
+
+            .imageExtent = this->pickChainExtent(),
+
+            .imageColorSpace = this->pickSwapFormat()
+
+            .surface = this->m_vulkanSurface, // point to the current surface
+
+            .minImageCount = props.capabilities.minImageCount + 1, // minimun images on the chain
+
+            .imageArrayLayers = 1,
+
+            .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+
+            
         };
     }
 
-    VulkanEng::VulkanEng(const char *appName, const char *engName) {
+    VkExtent2D VulkanEng::pickChainExtent() {
+        VkExtent2D dim = {
+            .height = static_cast<uint32_t>(m_graphicsCard.swapFrameDimensions.height),
+            .width = static_cast<uint32_t>(m_graphicsCard.swapFrameDimensions.width)
+        };
+
+        return dim;
+    }
+
+    VulkanEng::VulkanEng(const char *appName, const char *engName, windowHandler windowHandler) {
 
        setupApplicationInfo(appName, engName); // Init struct containing the info about the application
 
+        // Move to its own function
         // Get the vulkan instances required by GLFW
         const char **extensions = glfwGetRequiredInstanceExtensions(&m_extCount);
 
         for (int i = 0; i < m_extCount; i++)
             m_instExts.emplace_back(std::move(extensions[i]));
+        // ===========================================
             
 
 #ifdef __APPLE__
@@ -256,5 +286,7 @@ namespace vkEng {
          setupDebugger();
 #endif
         setupGraphicsCard();
+
+        this->winHandler = windowHandler; // Setup the window handler framework
     }
 }

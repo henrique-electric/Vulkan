@@ -19,6 +19,7 @@ namespace win {
         
         glfwSetKeyCallback(m_glfwWin, windowKeyHandler); // Set the default handler for key inputs
         setupWindowSurface(m_glfwWin);
+
     }
 
 
@@ -59,5 +60,8 @@ namespace win {
                 std::cout << ((action == GLFW_PRESS) ? "Pressed A\n" : "Released A\n");
                 break;
         }
+    }
+    void Window::setupSwapChainFrameBuffer(void) {
+        glfwGetFramebufferSize(m_glfwWin, &m_graphicsCard.swapFrameDimensions.width, &m_graphicsCard.swapFrameDimensions.height);
     }
 }

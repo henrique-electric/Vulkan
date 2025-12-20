@@ -16,7 +16,10 @@
 
 namespace vkEng
 {
-
+    enum windowHandler {
+        GLFW,
+        SDL
+    };
 
     class VulkanEng
     {
@@ -28,10 +31,11 @@ namespace vkEng
         
         // Protected functions
         void setupWindowSurface(GLFWwindow *window);
-        inline VkDevice getEngineLogicalDevice(void) {return this->m_graphicsCard.logicalInstance;};
-        inline VkInstance getEngineVulkanInstance(void) {return this->m_vkInstance;};
-        inline VkSurfaceKHR getEngineVulkanSurface(void) {return this->m_vulkanSurface;};
-        inline VkQueue getEngineQueueHandler(void) {return this->m_graphicsCard.queueInterface;};
+        inline VkDevice getEngineLogicalDevice(void) { return this->m_graphicsCard.logicalInstance;};
+        inline VkInstance getEngineVulkanInstance(void) { return this->m_vkInstance;};
+        inline VkSurfaceKHR getEngineVulkanSurface(void) { return this->m_vulkanSurface;};
+        inline VkQueue getEngineQueueHandler(void) { return this->m_graphicsCard.queueInterface;};
+        inline windowHandler getEngineWindowHandler(void) { return this->winHandler; };
         
         
 
@@ -42,6 +46,8 @@ namespace vkEng
 
 
     private:
+        windowHandler winHandler; // Which framework to use, SDL or GLFW
+
         VkApplicationInfo m_appInfo{}; // store basic info about the vulkan application
         VkInstanceCreateInfo m_instanceInfo{}; // Stores info used to create a vulkan instance
 
@@ -78,12 +84,12 @@ namespace vkEng
         void validateCardExtensions(vkEng::gpuDevice& card);
         void validateCardSwapChain();
         void initSwapChain();
-        void pickChainExtent(swapChainFrameDimensions &dimensionsStruct);
-        VkSurfaceFormatKHR pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats);
+        VkExtent2D pickChainExtent();
+        VkSurfaceFormatKHR pickSwapFormat();
         VkPresentModeKHR pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes);
 
     public:
-        VulkanEng(const char *appName, const char *engName);
+        VulkanEng(const char *appName, const char *engName, windowHandler windowHandler = windowHandler::GLFW);
     };
     
 }
