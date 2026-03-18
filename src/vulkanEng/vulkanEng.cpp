@@ -19,8 +19,11 @@ namespace vkEng {
      */
     int VulkanEng::analyzeGpu(std::vector<gpuDevice>& physicalDevices) {
 
+        if(physicalDevices.size() == 0)
+			std::runtime_error("No GPU found in the system with vulkan support");
+
         // Run throught an array with all the GPUs
-        for (int i = 0; i < physicalDevices.size(); i++) {
+        for (size_t i = 0; i < physicalDevices.size(); i++) {
             if (physicalDevices[i].properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
                 m_graphicsCard = std::move(physicalDevices[i]); // Pick the card if it is a discrete GPU
                 return i; // Return the index of the GPU in the array
@@ -40,7 +43,11 @@ namespace vkEng {
 		// Use vulkan API to list all the devices available on the system, and get their properties and features
         uint32_t availableCards = 0;
         vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, nullptr);
-        VkPhysicalDevice cardsFound[availableCards];
+
+		if (availableCards == 0)
+            std::runtime_error("No GPU found in the system with vulkan support");
+
+        VkPhysicalDevice *cardsFound = new VkPhysicalDevice[availableCards];
         VkPhysicalDeviceProperties cardsPropeties[availableCards];
         VkPhysicalDeviceFeatures cardsFeatures[availableCards];
         vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, cardsFound);
@@ -51,7 +58,7 @@ namespace vkEng {
         gpuDevice newCardStruct{};
         uint32_t cardQueueFamilyCount = 0;
 
-        for (int i = 0; i < availableCards; i++) {
+        for (size_t i = 0; i < availableCards; i++) {
 
             vkGetPhysicalDeviceProperties(cardsFound[i], &cardsPropeties[i]);
             vkGetPhysicalDeviceFeatures(cardsFound[i], &cardsFeatures[i]);
@@ -69,6 +76,7 @@ namespace vkEng {
             array.push_back(newCardStruct);
         }
 		//================================================================================================================
+		delete[] cardsFound;
     }
 
 	/*
@@ -98,10 +106,15 @@ namespace vkEng {
         vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr, &deviceExtCount,
                                             deviceExtensions);
 
-        for (uint32_t count = 0; count < deviceExtCount; count++) {
+        bool foundSwapChain = false;
+
+        for (size_t count = 0; count < deviceExtCount; count++) {
             if (strcmp(deviceExtensions[count].extensionName, "VK_KHR_swapchain") == 0)
-                std::runtime_error("Vulkan swapchain not available");
+				foundSwapChain = true;
         }
+
+        if (!foundSwapChain == false)
+            std::runtime_error("Vulkan swapchain not available");
     }
 
 
@@ -179,7 +192,7 @@ namespace vkEng {
 
     void VulkanEng::setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, gpuDevice& card) {
         // Run throught the queue families searching for a queue that uses all these 3 command processing
-        for (uint32_t familyIndex = 0; familyIndex < card.queueProperties.size(); familyIndex++) {
+        for (size_t familyIndex = 0; familyIndex < card.queueProperties.size(); familyIndex++) {
             if ((card.queueProperties[familyIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (card.queueProperties[familyIndex].queueFlags & VK_QUEUE_COMPUTE_BIT)) {
                 card.queueFamily = static_cast<uint8_t>(familyIndex); // get the index of the family
 
@@ -224,7 +237,7 @@ namespace vkEng {
         // Get the vulkan instances required by GLFW
         const char **extensions = glfwGetRequiredInstanceExtensions(&m_extCount);
 
-        for (int i = 0; i < m_extCount; i++)
+        for (size_t i = 0; i < m_extCount; i++)
             m_instExts.emplace_back(std::move(extensions[i]));
             
 
