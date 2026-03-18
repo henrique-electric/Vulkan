@@ -36,16 +36,19 @@ namespace vkEng {
         Get a vector with all GPUs detected on the system
      */
     void VulkanEng::getGpuVector(std::vector<gpuDevice> &array) {
+
+		// Use vulkan API to list all the devices available on the system, and get their properties and features
         uint32_t availableCards = 0;
         vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, nullptr);
         VkPhysicalDevice cardsFound[availableCards];
         VkPhysicalDeviceProperties cardsPropeties[availableCards];
         VkPhysicalDeviceFeatures cardsFeatures[availableCards];
-
         vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, cardsFound);
+		//================================================================================================================
 
+
+		// Run throught the array of devices found and get their properties, features and queue families, then store all this info in a gpuDevice struct and push it to the vector
         gpuDevice newCardStruct{};
-
         uint32_t cardQueueFamilyCount = 0;
 
         for (int i = 0; i < availableCards; i++) {
@@ -65,8 +68,13 @@ namespace vkEng {
             newCardStruct.queueProperties = std::move(cardQueueProperties);
             array.push_back(newCardStruct);
         }
+		//================================================================================================================
     }
 
+	/*
+        Function that setup the graphics card, this function should be called after creating the vulkan instance and the window surface, because it 
+        needs both of these to validate the card extensions and swap chain support
+    */
     void VulkanEng::setupGraphicsCard() {
         std::vector<gpuDevice> gpus;
         getGpuVector(gpus);
@@ -77,7 +85,10 @@ namespace vkEng {
         utils::listCardAvailableExt(m_graphicsCard);
     }
 
-
+    /*
+		Function to validate if the graphics card has support for the extensions needed by the application, in this case, we just need the swapchain extension, but 
+        more extensions can be added in the future
+    */
     void VulkanEng::validateCardExtensions(vkEng::gpuDevice& card) {
         uint32_t deviceExtCount = 0;
         vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr,
