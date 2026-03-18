@@ -36,11 +36,11 @@ set(IMGUI_CORE
 
 include_directories(./include)
 
-add_library(imgui ${IMGUI_CORE})
-target_include_directories(imgui PUBLIC external/imgui)
-target_include_directories(imgui PUBLIC external/imgui/backends)
-target_include_directories(imgui PUBLIC /opt/homebrew/include/)
-target_link_libraries(imgui glfw)
+#add_library(imgui ${IMGUI_CORE})
+#target_include_directories(imgui PUBLIC external/imgui)
+#target_include_directories(imgui PUBLIC external/imgui/backends)
+#target_include_directories(imgui PUBLIC /opt/homebrew/include/)
+#target_link_libraries(imgui glfw)
 
 # Include and link
 add_executable(MyVulkanApp src/main.cpp src/window.cpp src/vulkanEng/vulkanEng.cpp
