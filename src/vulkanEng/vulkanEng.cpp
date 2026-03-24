@@ -205,7 +205,7 @@ namespace vkEng {
             throw std::runtime_error("Error creating a logical device");
 
         vkGetDeviceQueue(m_graphicsCard.logicalInstance, m_graphicsCard.queueFamily, 0, &m_graphicsCard.queueInterface);
-        puts("Got the queue interface\n");
+        std::cout << "Got the queue interface\n";
     }
 
     /*
@@ -241,7 +241,7 @@ namespace vkEng {
           std::runtime_error("Failed to create the vulkan window surface");
         }
 
-        puts("Created the Vulkan window surface");
+        std::cout << "Created the Vulkan window surface\n";
     }
 
     void VulkanEng::pickChainExtent(swapChainFrameDimensions &dimensionsStruct) {

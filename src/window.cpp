@@ -30,17 +30,17 @@ namespace win {
        cleanDebugRes();
 #endif
         vkDestroyDevice(m_graphicsCard.logicalInstance, nullptr);
-        puts("Destroyed vulkan logical device\n");
+        std::cout << "Destroyed vulkan logical device\n";
         
         vkDestroySurfaceKHR(m_vkInstance, m_vulkanSurface, nullptr);
-        puts("Destroyed vulkan surface\n");
+        std::cout << "Destroyed vulkan surface\n";
 
         vkDestroyInstance(m_vkInstance, nullptr);
-        puts("Destroyed vulkan instace\n");
+        std::cout << "Destroyed vulkan instace\n";
 
         glfwDestroyWindow(m_glfwWin);
         glfwTerminate();
-        puts("Finished glfw\n");
+        std::cout << "Finished glfw\n";
     }
 
     void Window::run() {
