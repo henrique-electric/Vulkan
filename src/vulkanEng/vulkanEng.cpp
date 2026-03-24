@@ -117,7 +117,10 @@ namespace vkEng {
             std::runtime_error("Vulkan swapchain not available");
     }
 
-
+    /*
+		Make sure that the graphics card has support for the swap chain, this is done by checking if
+        the card has support for the surface and if it has the necessary properties to create a swap chain
+    */
     void VulkanEng::validateCardSwapChain() {
       vkEng::SwapChainProperties properties{};
 
@@ -137,8 +140,12 @@ namespace vkEng {
       
     }
 
-
+    /*
+		Handle the SwapChain format picking, this is done by checking if the desired format is
+        available, if not, we just pick the first one available
+    */
     VkSurfaceFormatKHR VulkanEng::pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats) {
+
         // Pick the best desired surface format if available
         for (auto& format : formats) {
            if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
@@ -190,7 +197,13 @@ namespace vkEng {
         puts("Got the queue interface\n");
     }
 
+    /*
+		Choose a queue from the listing ones and setup the structure used to create the logical device with the queue info, this is done 
+        by searching for a queue family that has support for graphics and compute commands, this 
+        way we can use the same queue for both types of commands, but more queues can be added in the future if needed
+    */
     void VulkanEng::setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, gpuDevice& card) {
+
         // Run throught the queue families searching for a queue that uses all these 3 command processing
         for (size_t familyIndex = 0; familyIndex < card.queueProperties.size(); familyIndex++) {
             if ((card.queueProperties[familyIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (card.queueProperties[familyIndex].queueFlags & VK_QUEUE_COMPUTE_BIT)) {
