@@ -48,8 +48,8 @@ namespace vkEng {
             std::runtime_error("No GPU found in the system with vulkan support");
 
         VkPhysicalDevice *cardsFound = new VkPhysicalDevice[availableCards];
-        VkPhysicalDeviceProperties cardsPropeties[availableCards];
-        VkPhysicalDeviceFeatures cardsFeatures[availableCards];
+        VkPhysicalDeviceProperties *cardsPropeties = new VkPhysicalDeviceProperties[availableCards];
+        VkPhysicalDeviceFeatures *cardsFeatures = new VkPhysicalDeviceFeatures[availableCards];
         vkEnumeratePhysicalDevices(m_vkInstance, &availableCards, cardsFound);
 		//================================================================================================================
 
@@ -77,6 +77,8 @@ namespace vkEng {
         }
 		//================================================================================================================
 		delete[] cardsFound;
+        delete[] cardsPropeties;
+        delete[] cardsFeatures;
     }
 
 	/*
