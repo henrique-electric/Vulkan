@@ -174,7 +174,10 @@ namespace vkEng {
       return VK_PRESENT_MODE_FIFO_KHR; // Pick the classic dual buffer image presentation
     }
 
-
+    /*
+		The function that holds the whole core logic to create a logical device, this is done by filling the structure with the queues info, the extensions 
+        to be used and the features of the card, then we create the logical device and get the queue interface
+    */
     void VulkanEng::setupLogicalDevice() {
         VkDeviceQueueCreateInfoMod logicalDeviceQueue{};
         VkDeviceCreateInfo logicalDeviceInfo{};
@@ -229,6 +232,10 @@ namespace vkEng {
         throw std::runtime_error("No required queue family found");
     }
 
+    /*
+		Create a Vulkan surface for the window using the GLFW library, this is needed to be able to present the rendered images to the window, this function should be 
+        called after creating the vulkan instance and before setting up the graphics card, because we need the surface to validate the swap chain support of the card
+    */
     void VulkanEng::setupWindowSurface(GLFWwindow *window) {
         if (glfwCreateWindowSurface(m_vkInstance, window, nullptr, &m_vulkanSurface) != VK_SUCCESS) {
           std::runtime_error("Failed to create the vulkan window surface");
@@ -251,6 +258,10 @@ namespace vkEng {
         };
     }
 
+    /*
+		The constructor of the vulkan engine, this is where we create the vulkan instance, setup the application info and load the extensions required by GLFW, then we setup 
+        the graphics card and the logical device
+    */
     VulkanEng::VulkanEng(const char *appName, const char *engName) {
 
        setupApplicationInfo(appName, engName); // Init struct containing the info about the application
