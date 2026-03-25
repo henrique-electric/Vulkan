@@ -67,7 +67,7 @@ namespace vkEng {
         uint32_t availableLayers = 0; // Variable to store all the available layers in the current system.
         vkEnumerateInstanceLayerProperties(&availableLayers, nullptr);  // Get How many layers are available in the current system.
         
-        VkLayerProperties currentLayersArr[availableLayers]; // Allocate a buffer to hold structures to each available layer.
+        VkLayerProperties *currentLayersArr = new VkLayerProperties[availableLayers]; // Allocate a buffer to hold structures to each available layer.
         
         vkEnumerateInstanceLayerProperties(&availableLayers, currentLayersArr); // Load to buffer the layers available on the system.
         
@@ -80,7 +80,7 @@ namespace vkEng {
             }
         }
 
-        
+		delete[] currentLayersArr; // Clean the buffer used to hold the available layers.
     }
 
     /*
