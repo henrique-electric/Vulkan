@@ -6,17 +6,17 @@ namespace vkEng {
     // setup basic info of the vulkan application
     void VulkanEng::setupApplicationInfo(const char *appName, const char *engName) {
          m_appInfo.sType  = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-         m_appInfo.pEngineName  = engName;
-         m_appInfo.pApplicationName = appName;
-         m_appInfo.apiVersion = VK_API_VERSION_1_0;
-         m_appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-         m_appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-         m_appInfo.pNext = nullptr;
+		 m_appInfo.pEngineName = engName;                         // Name used by the engine (Not mandatory).
+		 m_appInfo.pApplicationName = appName;                    // Name used by the application (Not mandatory).
+         m_appInfo.apiVersion = VK_API_VERSION_1_0;               // Version of the vulkan API to be used, used to check if the current system vulkan API matches the requirement of this application to run.
+         m_appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0); // Version of the application, this is used for informational purposes, so it's not mandatory.
+		 m_appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);      // Version of the engine, also used for informational purposes, so it's also not mandatory.
+         m_appInfo.pNext = nullptr;                               // Pointer to a structure with more infos for the application and to use with some extensions, also not mandatory, but it's a good practice to set it to nullptr.
     }
 
     /*
         Analyse all the gpus found searching for a discrete GPU, if none is found, we use the integrated GPU
-     */
+    */
     int VulkanEng::analyzeGpu(std::vector<gpuDevice>& physicalDevices) {
 
         if(physicalDevices.size() == 0)
@@ -60,11 +60,13 @@ namespace vkEng {
 
         for (size_t i = 0; i < availableCards; i++) {
 
+		// Get the properties and features of each physical device found by the vulkan API
             vkGetPhysicalDeviceProperties(cardsFound[i], &cardsPropeties[i]);
             vkGetPhysicalDeviceFeatures(cardsFound[i], &cardsFeatures[i]);
+        
 
+            // Get the details of queue for each physical device found
             vkGetPhysicalDeviceQueueFamilyProperties(cardsFound[i], &cardQueueFamilyCount, nullptr);
-
             std::vector<VkQueueFamilyProperties> cardQueueProperties(cardQueueFamilyCount);
             vkGetPhysicalDeviceQueueFamilyProperties(cardsFound[i], &cardQueueFamilyCount, cardQueueProperties.data());
 
@@ -100,6 +102,8 @@ namespace vkEng {
         more extensions can be added in the future
     */
     void VulkanEng::validateCardExtensions(vkEng::gpuDevice& card) {
+
+    //  Get how much extensions the card being used has support for and all the details of these extensiosn
         uint32_t deviceExtCount = 0;
         vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr,
                                             &deviceExtCount, nullptr);
@@ -248,6 +252,11 @@ namespace vkEng {
         
     }
 
+    /*
+		Function used to initialize the swap chain, this is done by getting the properties of the swap chain support of the 
+        graphics card, picking the best surface format and presentation mode, and then filling the structure used to create 
+        the swap chain with this info
+    */
     void VulkanEng::initSwapChain() {
         SwapChainProperties chainProperties;
         
@@ -273,6 +282,12 @@ namespace vkEng {
             m_instExts.emplace_back(std::move(extensions[i]));
             
 
+       /*
+		  Add intace extensions required by the application for MacOS in this case, we need the VK_KHR_portability_enumeration extension to be able to enumerate the 
+          physical devices on the system, and the VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR flag to be able to use this extension, this is needed because 
+          MacOS does not have native support for vulkan and uses a translation layer called MoltenVK to provide vulkan support, and this 
+          translation layer does not support all the features of vulkan, so we need to use this extension to be able to enumerate the physical devices on the system
+       */
 #ifdef __APPLE__
         m_instExts.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
         m_instanceInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
