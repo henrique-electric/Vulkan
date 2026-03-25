@@ -71,7 +71,7 @@ namespace vkEng
         // Functions
         int  analyzeGpu(std::vector<gpuDevice>& physicalDevices);
         void getGpuVector(std::vector<gpuDevice>& array);
-        void setupLogicalDevice();
+        void setupLogicalDevice(const std::vector<const char*> *additionalExtensions = nullptr);
         void setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, gpuDevice& card);
         void setupApplicationInfo(const char *appName, const char *engName);
         void setupGraphicsCard();

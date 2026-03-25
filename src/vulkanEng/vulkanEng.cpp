@@ -185,15 +185,29 @@ namespace vkEng {
 		The function that holds the whole core logic to create a logical device, this is done by filling the structure with the queues info, the extensions 
         to be used and the features of the card, then we create the logical device and get the queue interface
     */
-    void VulkanEng::setupLogicalDevice() {
+    void VulkanEng::setupLogicalDevice(const std::vector<const char*> *additionalExtensions) {
+
         VkDeviceQueueCreateInfoMod logicalDeviceQueue{};
         VkDeviceCreateInfo logicalDeviceInfo{};
         setupQueues(logicalDeviceQueue, m_graphicsCard);
 
         logicalDeviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 
-        const char* extensions[] = {"VK_KHR_swapchain"}; // Load a simple device extension
-        logicalDeviceInfo.ppEnabledExtensionNames = extensions;
+        std::vector<const char *> extensions;
+
+        // Default extensions to be loaded
+        extensions.push_back("VK_KHR_swapchain");
+        //=================================
+
+        if (additionalExtensions == nullptr) {
+            std::cout << "No additional extensions were provided\n";
+        } else {
+            for (auto &extension : *additionalExtensions) {
+                 std::cout << extension;
+            }
+        }
+
+        logicalDeviceInfo.ppEnabledExtensionNames = extensions.data();
         logicalDeviceInfo.enabledExtensionCount = 1;
 
         /*
