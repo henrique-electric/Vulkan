@@ -13,6 +13,7 @@
 // Project includes
 #include <utils.hpp>
 #include <types.hpp>
+#include <macros.hpp>
 
 namespace vkEng
 {
