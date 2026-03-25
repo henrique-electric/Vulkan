@@ -1,6 +1,14 @@
 #pragma once
 #include <vulkan/vulkan.hpp>
 
+/*
+    This file contains custom data types to abstract some of vulkan's structures into a more compact data type and trying to keep some
+	kind of semantic meaning, for example, the gpuDevice struct is used to store all the info about a physical device found on the system, 
+    and the swapChainProperties struct is used to store all the info about the swap chain support of a physical device to be used on the application, 
+    this way we can keep all the info 
+    about a physical device in one place and make it easier to access it when needed.
+*/
+
 namespace vkEng {
 
     struct swapChainFrameDimensions {
