@@ -93,8 +93,11 @@ namespace vkEng {
         analyzeGpu(gpus);
         validateCardExtensions(m_graphicsCard);
         setupLogicalDevice();
-        utils::printCardDetails(m_graphicsCard);
-        utils::listCardAvailableExt(m_graphicsCard);
+
+        #ifdef DEBUG
+            utils::printCardDetails(m_graphicsCard);
+            utils::listCardAvailableExt(m_graphicsCard);
+        #endif
     }
 
     /*
@@ -199,13 +202,15 @@ namespace vkEng {
         extensions.push_back("VK_KHR_swapchain");
         //=================================
 
+    #ifdef DEBUG
         if (additionalExtensions == nullptr) {
-            std::cout << "No additional extensions were provided\n";
+            log("No additional extensions were provided\n");
         } else {
             for (auto &extension : *additionalExtensions) {
-                 std::cout << extension;
+                 std::cout << "Additional extension ---> " << extension << " provided\n";
             }
         }
+    #endif
 
         logicalDeviceInfo.ppEnabledExtensionNames = extensions.data();
         logicalDeviceInfo.enabledExtensionCount = 1;
@@ -226,7 +231,11 @@ namespace vkEng {
             std::runtime_error("Error creating a logical device");
 
         vkGetDeviceQueue(m_graphicsCard.logicalInstance, m_graphicsCard.queueFamily, 0, &m_graphicsCard.queueInterface);
-        std::cout << "Got the queue interface\n";
+
+    #ifdef DEBUG
+        log("Got the queue interface\n");
+    #endif
+
     }
 
     /*
@@ -262,7 +271,9 @@ namespace vkEng {
           std::runtime_error("Failed to create the vulkan window surface");
         }
 
-        std::cout << "Created the Vulkan window surface\n";
+    #ifdef DEBUG
+        log("Created the Vulkan window surface\n");
+    #endif
     }
 
     void VulkanEng::pickChainExtent(swapChainFrameDimensions &dimensionsStruct) {
