@@ -209,7 +209,7 @@ namespace vkEng {
         logicalDeviceInfo.queueCreateInfoCount = 1; // just one queue family for now
 
         if (vkCreateDevice(m_graphicsCard.device, &logicalDeviceInfo, nullptr, &m_graphicsCard.logicalInstance) != VK_SUCCESS)
-            throw std::runtime_error("Error creating a logical device");
+            std::runtime_error("Error creating a logical device");
 
         vkGetDeviceQueue(m_graphicsCard.logicalInstance, m_graphicsCard.queueFamily, 0, &m_graphicsCard.queueInterface);
         std::cout << "Got the queue interface\n";
@@ -236,7 +236,7 @@ namespace vkEng {
             }
         }
 
-        throw std::runtime_error("No required queue family found");
+        std::runtime_error("No required queue family found");
     }
 
     /*
@@ -322,7 +322,7 @@ namespace vkEng {
          m_instanceInfo.ppEnabledExtensionNames = m_instExts.data();
 
         if (vkCreateInstance(&m_instanceInfo, nullptr, &m_vkInstance) != VK_SUCCESS) {
-            throw std::runtime_error("Error to init a vulkan instance");
+            std::runtime_error("Error to init a vulkan instance");
         }
 
 // Setup the messenger debugger if in debug enviroment
