@@ -108,9 +108,10 @@ namespace vkEng {
         vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr,
                                             &deviceExtCount, nullptr);
 
-        VkExtensionProperties deviceExtensions[deviceExtCount];
+        VkExtensionProperties *deviceExtensions = new VkExtensionProperties[deviceExtCount];
         vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr, &deviceExtCount,
                                             deviceExtensions);
+		//=================================================================================================
 
         bool foundSwapChain = false;
 
@@ -121,6 +122,8 @@ namespace vkEng {
 
         if (!foundSwapChain == false)
             std::runtime_error("Vulkan swapchain not available");
+
+		delete[] deviceExtensions;
     }
 
     /*
