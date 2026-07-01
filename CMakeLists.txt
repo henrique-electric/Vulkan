@@ -34,6 +34,8 @@ set(IMGUI_CORE
     external/imgui/imgui.cpp
 )
 
+file(GLOB_RECURSE MYVULKANAPP_SOURCES CONFIGURE_DEPENDS src/*)
+
 include_directories(./include)
 
 #add_library(imgui ${IMGUI_CORE})
@@ -43,8 +45,7 @@ include_directories(./include)
 #target_link_libraries(imgui glfw)
 
 # Include and link
-add_executable(MyVulkanApp src/main.cpp src/window.cpp src/vulkanEng/vulkanEng.cpp
-        src/vulkanEng/vulkanEngDebug.cpp src/utils.cpp)
+add_executable(MyVulkanApp ${MYVULKANAPP_SOURCES})
 
 add_custom_target(debug DEPENDS MyVulkanApp  COMMAND lldb $<TARGET_FILE:MyVulkanApp> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
