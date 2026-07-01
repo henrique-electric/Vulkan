@@ -100,89 +100,6 @@ namespace vkEng {
         #endif
     }
 
-    /*
-		Function to validate if the graphics card has support for the extensions needed by the application, in this case, we just need the swapchain extension, but 
-        more extensions can be added in the future
-    */
-    void VulkanEng::validateCardExtensions(vkEng::gpuDevice& card) {
-
-    //  Get how much extensions the card being used has support for and all the details of these extensiosn
-        uint32_t deviceExtCount = 0;
-        vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr,
-                                            &deviceExtCount, nullptr);
-
-        VkExtensionProperties *deviceExtensions = new VkExtensionProperties[deviceExtCount];
-        vkEnumerateDeviceExtensionProperties(m_graphicsCard.device, nullptr, &deviceExtCount,
-                                            deviceExtensions);
-		//=================================================================================================
-
-        bool foundSwapChain = false;
-
-        for (size_t count = 0; count < deviceExtCount; count++) {
-            if (strcmp(deviceExtensions[count].extensionName, "VK_KHR_swapchain") == 0)
-				foundSwapChain = true;
-        }
-
-        if (!foundSwapChain == false)
-            std::runtime_error("Vulkan swapchain not available");
-
-		delete[] deviceExtensions;
-    }
-
-    /*
-		Make sure that the graphics card has support for the swap chain, this is done by checking if
-        the card has support for the surface and if it has the necessary properties to create a swap chain
-    */
-    void VulkanEng::validateCardSwapChain() {
-      vkEng::SwapChainProperties properties{};
-
-      vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_graphicsCard.device, m_vulkanSurface,
-                                                &properties.capabilities);
-
-      uint32_t surfaceFormatCount = 0;
-      vkGetPhysicalDeviceSurfaceFormatsKHR(m_graphicsCard.device, m_vulkanSurface, &surfaceFormatCount, nullptr );
-      
-      uint32_t presentationModesCount = 0;
-      vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface, &presentationModesCount, nullptr);
-
-      vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface,  &presentationModesCount, properties.presentationModes.data());
-
-      if (properties.presentationModes.empty() || properties.formats.empty())
-          std::runtime_error("Surface has not the necessary properties to use swap chain");
-      
-    }
-
-    /*
-		Handle the SwapChain format picking, this is done by checking if the desired format is
-        available, if not, we just pick the first one available
-    */
-    VkSurfaceFormatKHR VulkanEng::pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats) {
-
-        if (formats.size() == 0)
-            std::runtime_error("No surface formats found for the swap chain");
-
-        // Pick the best desired surface format if available
-        for (auto& format : formats) {
-           if (format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-              return format;
-        }
-
-        return formats[0]; // Pick the first one if not found the desired one
-    }
-
-
-    VkPresentModeKHR VulkanEng::pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes) {
-        if (modes.size() == 0)
-			std::runtime_error("No presentation modes found for the swap chain");
-        
-        for(auto& mode : modes) {
-            if (mode == VK_PRESENT_MODE_MAILBOX_KHR)
-                return mode; // Pick the mailbox present mode if available, this mode does make the application to wait if the buffers are full
-
-        }
-
-      return VK_PRESENT_MODE_FIFO_KHR; // Pick the classic dual buffer image presentation
-    }
 
     /*
 		The function that holds the whole core logic to create a logical device, this is done by filling the structure with the queues info, the extensions 
@@ -238,29 +155,7 @@ namespace vkEng {
 
     }
 
-    /*
-		Choose a queue from the listing ones and setup the structure used to create the logical device with the queue info, this is done 
-        by searching for a queue family that has support for graphics and compute commands, this 
-        way we can use the same queue for both types of commands, but more queues can be added in the future if needed
-    */
-    void VulkanEng::setupQueues(VkDeviceQueueCreateInfoMod& queueCreationInfo, gpuDevice& card) {
-
-        // Run throught the queue families searching for a queue that uses all these 3 command processing
-        for (size_t familyIndex = 0; familyIndex < card.queueProperties.size(); familyIndex++) {
-            if ((card.queueProperties[familyIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (card.queueProperties[familyIndex].queueFlags & VK_QUEUE_COMPUTE_BIT)) {
-                card.queueFamily = static_cast<uint8_t>(familyIndex); // get the index of the family
-
-                queueCreationInfo.queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-                queueCreationInfo.queueInfo.queueFamilyIndex = familyIndex;
-                queueCreationInfo.queueInfo.queueCount = 1;
-                queueCreationInfo.queuePriority = 1.0f;
-                queueCreationInfo.queueInfo.pQueuePriorities = &queueCreationInfo.queuePriority;
-                return;
-            }
-        }
-
-        std::runtime_error("No required queue family found");
-    }
+  
 
     /*
 		Create a Vulkan surface for the window using the GLFW library, this is needed to be able to present the rendered images to the window, this function should be 
@@ -276,24 +171,7 @@ namespace vkEng {
     #endif
     }
 
-    void VulkanEng::pickChainExtent(swapChainFrameDimensions &dimensionsStruct) {
-        
-    }
 
-    /*
-		Function used to initialize the swap chain, this is done by getting the properties of the swap chain support of the 
-        graphics card, picking the best surface format and presentation mode, and then filling the structure used to create 
-        the swap chain with this info
-    */
-    void VulkanEng::initSwapChain() {
-        SwapChainProperties chainProperties;
-        
-        VkSwapchainCreateInfoKHR chainInfo = {
-            .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-            .presentMode =  this->pickSwapPresentMode(chainProperties.presentationModes),
-            .surface = this->m_vulkanSurface,
-        };
-    }
 
     /*
 		The constructor of the vulkan engine, this is where we create the vulkan instance, setup the application info and load the extensions required by GLFW, then we setup 
