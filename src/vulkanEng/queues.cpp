@@ -24,6 +24,6 @@ namespace vkEng {
             }
         }
 
-        std::runtime_error("No required queue family found");
+        throw std::runtime_error("No required queue family found");
     }
 }

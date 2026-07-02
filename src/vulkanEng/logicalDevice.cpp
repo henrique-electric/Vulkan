@@ -47,7 +47,7 @@ namespace vkEng {
         logicalDeviceInfo.queueCreateInfoCount = 1; // just one queue family for now
 
         if (vkCreateDevice(m_graphicsCard.device, &logicalDeviceInfo, nullptr, &m_graphicsCard.logicalInstance) != VK_SUCCESS)
-            std::runtime_error("Error creating a logical device");
+            throw std::runtime_error("Error creating a logical device");
 
         vkGetDeviceQueue(m_graphicsCard.logicalInstance, m_graphicsCard.queueFamily, 0, &m_graphicsCard.queueInterface);
 

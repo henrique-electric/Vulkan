@@ -27,7 +27,7 @@ namespace vkEng {
         }
 
         if (!foundSwapChain == false)
-            std::runtime_error("Vulkan swapchain not available");
+            throw std::runtime_error("Vulkan swapchain not available");
 
         delete[] deviceExtensions;
     }

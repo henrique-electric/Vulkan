@@ -102,7 +102,7 @@ namespace vkEng {
          m_instanceInfo.ppEnabledExtensionNames = m_instExts.data();
 
         if (vkCreateInstance(&m_instanceInfo, nullptr, &m_vkInstance) != VK_SUCCESS) {
-            std::runtime_error("Error to init a vulkan instance");
+            throw std::runtime_error("Error to init a vulkan instance");
         }
 
 // Setup the messenger debugger if in debug enviroment
