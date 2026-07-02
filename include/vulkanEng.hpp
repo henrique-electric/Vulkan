@@ -29,6 +29,7 @@ namespace vkEng
         
         // Protected functions
         void setupWindowSurface(GLFWwindow *window);
+        void pickChainExtent(GLFWwindow* window);
         inline VkDevice getEngineLogicalDevice(void) {return this->m_graphicsCard.logicalInstance;};
         inline VkInstance getEngineVulkanInstance(void) {return this->m_vkInstance;};
         inline VkSurfaceKHR getEngineVulkanSurface(void) {return this->m_vulkanSurface;};
@@ -77,9 +78,8 @@ namespace vkEng
         void setupApplicationInfo(const char *appName, const char *engName);
         void setupGraphicsCard();
         void validateCardExtensions(vkEng::gpuDevice& card);
-        void validateCardSwapChain();
+        void validateCardSwapChain(SwapChainProperties& properties);
         void initSwapChain();
-        void pickChainExtent(swapChainFrameDimensions &dimensionsStruct);
         VkSurfaceFormatKHR pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats);
         VkPresentModeKHR pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes);
 
