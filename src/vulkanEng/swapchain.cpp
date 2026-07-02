@@ -3,8 +3,11 @@
 
 namespace vkEng {
     // +=--------------------------------------------------------------------------
-    void VulkanEng::pickChainExtent(swapChainFrameDimensions& dimensionsStruct) {
+    void VulkanEng::pickChainExtent(GLFWwindow *window) {
+        if (window == nullptr)
+            std::runtime_error("Error getting glfw window handler to setup the viewport");
 
+        glfwGetFramebufferSize(window, &m_graphicsCard.swapFrameDimensions.width, &m_graphicsCard.swapFrameDimensions.height);
     }
     // --------------------------------------------------------------------------
 
@@ -16,40 +19,66 @@ namespace vkEng {
     */
     void VulkanEng::initSwapChain() {
         SwapChainProperties chainProperties;
+        validateCardSwapChain(chainProperties); // The structures are populated
+        
+        VkExtent2D extent = {
+            .height = static_cast<uint32_t>(m_graphicsCard.swapFrameDimensions.height),
+            .width = static_cast<uint32_t>(m_graphicsCard.swapFrameDimensions.width)
+        };
+
+        VkSurfaceFormatKHR presentMode = pickSwapFormat(chainProperties.formats);
 
         VkSwapchainCreateInfoKHR chainInfo = {
             .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-            .presentMode = this->pickSwapPresentMode(chainProperties.presentationModes),
+            .imageFormat = this->pickSwapFormat(chainProperties.formats).format,
+            .imageColorSpace = this->pickSwapFormat(chainProperties.formats).colorSpace,
+            .imageArrayLayers = 1,
+            .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+            .preTransform = chainProperties.capabilities.currentTransform,
+            .clipped = VK_TRUE,
+            .imageExtent = extent,
             .surface = this->m_vulkanSurface,
         };
+
+        if (vkCreateSwapchainKHR(m_graphicsCard.logicalInstance, &chainInfo, NULL, &m_graphicsCard.swapChain) != VK_SUCCESS)
+            std::runtime_error("Error creating swapchain");
     }
     // --------------------------------------------------------------------------
 
     // +=--------------------------------------------------------------------------
     /*
-        Make sure that the graphics card has support for the swap chain, this is done by checking if
+        Populate and Make sure that the graphics card has support for the swap chain, this is done by checking if
         the card has support for the surface and if it has the necessary properties to create a swap chain
     */
-    void VulkanEng::validateCardSwapChain() {
-        vkEng::SwapChainProperties properties{};
+    void VulkanEng::validateCardSwapChain(SwapChainProperties& properties) {
 
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_graphicsCard.device, m_vulkanSurface,
             &properties.capabilities);
 
         uint32_t surfaceFormatCount = 0;
         vkGetPhysicalDeviceSurfaceFormatsKHR(m_graphicsCard.device, m_vulkanSurface, &surfaceFormatCount, nullptr);
+        if (surfaceFormatCount != 0) {
+            properties.formats.resize(surfaceFormatCount);
+            vkGetPhysicalDeviceSurfaceFormatsKHR(m_graphicsCard.device, m_vulkanSurface, &surfaceFormatCount, properties.formats.data());
+        } else {
+            properties.formats.clear();
+        }
 
         uint32_t presentationModesCount = 0;
         vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface, &presentationModesCount, nullptr);
-
-        vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface, &presentationModesCount, properties.presentationModes.data());
+        if (presentationModesCount != 0) {
+            properties.presentationModes.resize(presentationModesCount);
+            vkGetPhysicalDeviceSurfacePresentModesKHR(m_graphicsCard.device, m_vulkanSurface, &presentationModesCount, properties.presentationModes.data());
+        } else {
+            properties.presentationModes.clear();
+        }
 
         if (properties.presentationModes.empty() || properties.formats.empty())
-            std::runtime_error("Surface has not the necessary properties to use swap chain");
+            throw std::runtime_error("Surface has not the necessary properties to use swap chain");
 
     }
     // --------------------------------------------------------------------------
-
+    
     // +=--------------------------------------------------------------------------
     /*
         Handle the SwapChain format picking, this is done by checking if the desired format is
@@ -58,7 +87,7 @@ namespace vkEng {
     VkSurfaceFormatKHR VulkanEng::pickSwapFormat(const std::vector<VkSurfaceFormatKHR>& formats) {
 
         if (formats.size() == 0)
-            std::runtime_error("No surface formats found for the swap chain");
+            throw std::runtime_error("No surface formats found for the swap chain");
 
         // Pick the best desired surface format if available
         for (auto& format : formats) {
@@ -73,7 +102,7 @@ namespace vkEng {
     // +=--------------------------------------------------------------------------
     VkPresentModeKHR VulkanEng::pickSwapPresentMode(const std::vector<VkPresentModeKHR>& modes) {
         if (modes.size() == 0)
-            std::runtime_error("No presentation modes found for the swap chain");
+            throw std::runtime_error("No presentation modes found for the swap chain");
 
         for (auto& mode : modes) {
             if (mode == VK_PRESENT_MODE_MAILBOX_KHR)
