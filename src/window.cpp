@@ -3,8 +3,7 @@
 namespace win {
 
     // Window contructor
-    Window::Window(const char *name, int width, int height, std::function<void(void)> mainFunc) : VulkanEng(name, "Engine"), m_height(height),
-                                                                                                  m_width(width), m_mainLoop(std::move(mainFunc))
+    Window::Window(const char *name, int width, int height, std::function<void(void)> mainFunc) : m_height(height), m_width(width), m_mainLoop(std::move(mainFunc))
     {
     
     // Initialize GLFW and set the window hints
@@ -18,34 +17,15 @@ namespace win {
             throw std::runtime_error("Error to create GLFW window"); // error creating the window
         
         glfwSetKeyCallback(m_glfwWin, windowKeyHandler); // Set the default handler for key inputs
-        setupWindowSurface(m_glfwWin);
+        engine = std::make_unique<vkEng::VulkanEng>(new vkEng::VulkanEng("Teste", "Teste"));
+        engine->setupWindowSurface(m_glfwWin);
+        engine->pickChainExtent(m_glfwWin);
+        engine->initSwapChain();
     }
 
 
     // Object descontructor, frees the glfw resources and deletes vulkan instance
     Window::~Window() {
-
-// Clean all resources used for debbuging
-#ifdef DEBUG
-       cleanDebugRes();
-#endif
-        vkDestroyDevice(m_graphicsCard.logicalInstance, nullptr);
-        #ifdef DEBUG
-            std::cout << "Destroyed vulkan logical device\n";
-        #endif
-
-        vkDestroySurfaceKHR(m_vkInstance, m_vulkanSurface, nullptr);
-
-        #ifdef DEBUG
-            std::cout << "Destroyed vulkan surface\n";
-        #endif
-
-        vkDestroyInstance(m_vkInstance, nullptr);
-
-        #ifdef DEBUG
-            std::cout << "Destroyed vulkan instace\n";
-        #endif
-
         glfwDestroyWindow(m_glfwWin);
         glfwTerminate();
 

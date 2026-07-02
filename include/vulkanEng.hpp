@@ -18,23 +18,23 @@
 namespace vkEng
 {
 
-
     class VulkanEng
     {
-    protected:
+    private:
         VkInstance m_vkInstance{}; // Stores the vulkan instance itself
         VkSurfaceKHR m_vulkanSurface{};
         gpuDevice  m_graphicsCard{};
         
-        
-        // Protected functions
+    public:
+        VulkanEng(const char* appName, const char* engName);
+        ~VulkanEng();
         void setupWindowSurface(GLFWwindow *window);
         void pickChainExtent(GLFWwindow* window);
-        inline VkDevice getEngineLogicalDevice(void) {return this->m_graphicsCard.logicalInstance;};
-        inline VkInstance getEngineVulkanInstance(void) {return this->m_vkInstance;};
-        inline VkSurfaceKHR getEngineVulkanSurface(void) {return this->m_vulkanSurface;};
-        inline VkQueue getEngineQueueHandler(void) {return this->m_graphicsCard.queueInterface;};
-        
+        void initSwapChain();
+        inline VkDevice getEngineLogicalDevice(void) { return this->m_graphicsCard.logicalInstance; }
+        inline VkInstance getEngineVulkanInstance(void) { return this->m_vkInstance; }
+        inline VkSurfaceKHR getEngineVulkanSurface(void) { return this->m_vulkanSurface; }
+        inline VkQueue getEngineQueueHandler(void) { return this->m_graphicsCard.queueInterface; }
         
 
 #ifdef DEBUG
@@ -79,12 +79,8 @@ namespace vkEng
         void setupGraphicsCard();
         void validateCardExtensions(vkEng::gpuDevice& card);
         void validateCardSwapChain(SwapChainProperties& properties);
-        void initSwapChain();
         VkSurfaceFormatKHR pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats);
         VkPresentModeKHR pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes);
-
-    public:
-        VulkanEng(const char *appName, const char *engName);
     };
     
 }

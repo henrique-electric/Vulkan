@@ -38,7 +38,7 @@ namespace vkEng {
     */
     void VulkanEng::setupWindowSurface(GLFWwindow *window) {
         if (glfwCreateWindowSurface(m_vkInstance, window, nullptr, &m_vulkanSurface) != VK_SUCCESS) {
-          std::runtime_error("Failed to create the vulkan window surface");
+            throw std::runtime_error("Failed to create the vulkan window surface");
         }
 
     #ifdef DEBUG
@@ -58,6 +58,8 @@ namespace vkEng {
 
         // Get the vulkan instances required by GLFW
         const char **extensions = glfwGetRequiredInstanceExtensions(&m_extCount);
+        if (extensions == nullptr)
+            throw std::runtime_error("Error Getting glfw extensions");
 
         for (size_t i = 0; i < m_extCount; i++)
             m_instExts.emplace_back(std::move(extensions[i]));
@@ -108,5 +110,27 @@ namespace vkEng {
          setupDebugger();
 #endif
         setupGraphicsCard();
+    }
+    VulkanEng::~VulkanEng()
+    {
+#ifdef DEBUG
+        cleanDebugRes();
+#endif
+        vkDestroyDevice(m_graphicsCard.logicalInstance, nullptr);
+#ifdef DEBUG
+        std::cout << "Destroyed vulkan logical device\n";
+#endif
+
+        vkDestroySurfaceKHR(m_vkInstance, m_vulkanSurface, nullptr);
+
+#ifdef DEBUG
+        std::cout << "Destroyed vulkan surface\n";
+#endif
+
+        vkDestroyInstance(m_vkInstance, nullptr);
+
+#ifdef DEBUG
+        std::cout << "Destroyed vulkan instace\n";
+#endif
     }
 }

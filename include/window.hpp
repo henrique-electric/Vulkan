@@ -8,12 +8,13 @@
 #include <functional>
 
 namespace win {
-    class Window : public vkEng::VulkanEng
+    class Window
     {
     private:
         GLFWwindow *m_glfwWin;
         int m_height, m_width;
         std::function<void(void)> m_mainLoop;
+        std::unique_ptr<vkEng::VulkanEng> engine;
 
         // functions
         static void windowKeyHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
