@@ -26,8 +26,6 @@ namespace vkEng {
             .width = static_cast<uint32_t>(m_graphicsCard.swapFrameDimensions.width)
         };
 
-        VkSurfaceFormatKHR presentMode = pickSwapFormat(chainProperties.formats);
-
         VkSwapchainCreateInfoKHR chainInfo = {
             .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
             .imageFormat = this->pickSwapFormat(chainProperties.formats).format,
