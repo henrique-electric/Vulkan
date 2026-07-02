@@ -42,8 +42,10 @@ namespace vkEng {
 
         if (vkCreateSwapchainKHR(m_graphicsCard.logicalInstance, &chainInfo, NULL, &m_graphicsCard.swapChain) != VK_SUCCESS)
             throw std::runtime_error("Error creating swapchain");
-
+    
+    #ifdef DEBUG
         log("Created Swapchain");
+    #endif
     }
     // --------------------------------------------------------------------------
 
