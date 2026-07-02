@@ -17,7 +17,7 @@ namespace win {
             throw std::runtime_error("Error to create GLFW window"); // error creating the window
         
         glfwSetKeyCallback(m_glfwWin, windowKeyHandler); // Set the default handler for key inputs
-        engine = std::make_unique<vkEng::VulkanEng>(new vkEng::VulkanEng("Teste", "Teste"));
+        engine = std::make_unique<vkEng::VulkanEng>("Teste", "Teste");
         engine->setupWindowSurface(m_glfwWin);
         engine->pickChainExtent(m_glfwWin);
         engine->initSwapChain();
