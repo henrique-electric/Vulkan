@@ -31,6 +31,7 @@ namespace vkEng {
             .imageFormat = this->pickSwapFormat(chainProperties.formats).format,
             .imageColorSpace = this->pickSwapFormat(chainProperties.formats).colorSpace,
             .imageArrayLayers = 1,
+            .minImageCount = 2,
             .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
             .preTransform = chainProperties.capabilities.currentTransform,
             .clipped = VK_TRUE,
