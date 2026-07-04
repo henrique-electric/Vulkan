@@ -18,8 +18,7 @@ namespace vkEng {
         the swap chain with this info
     */
     void VulkanEng::initSwapChain() {
-        SwapChainProperties chainProperties;
-        validateCardSwapChain(chainProperties); // The structures are populated
+        validateCardSwapChain(m_graphicsCard.swapChainProps); // The structures are populated
         
         VkExtent2D extent = {
             .height = static_cast<uint32_t>(m_graphicsCard.swapFrameDimensions.height),
@@ -28,15 +27,16 @@ namespace vkEng {
 
         VkSwapchainCreateInfoKHR chainInfo = {
             .sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-            .imageFormat = this->pickSwapFormat(chainProperties.formats).format,
-            .imageColorSpace = this->pickSwapFormat(chainProperties.formats).colorSpace,
+            .imageFormat = this->pickSwapFormat(m_graphicsCard.swapChainProps.formats).format,
+            .imageColorSpace = this->pickSwapFormat(m_graphicsCard.swapChainProps.formats).colorSpace,
             .imageArrayLayers = 1,
             .minImageCount = 2,
             .imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
-            .preTransform = chainProperties.capabilities.currentTransform,
+            .preTransform = m_graphicsCard.swapChainProps.capabilities.currentTransform,
             .clipped = VK_TRUE,
             .imageExtent = extent,
             .surface = this->m_vulkanSurface,
+ 
         };
 
         if (vkCreateSwapchainKHR(m_graphicsCard.logicalInstance, &chainInfo, NULL, &m_graphicsCard.swapChain) != VK_SUCCESS)
