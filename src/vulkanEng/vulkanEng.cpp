@@ -111,8 +111,11 @@ namespace vkEng {
 #endif
         setupGraphicsCard();
     }
+    
     VulkanEng::~VulkanEng()
     {
+        vkDestroySwapchainKHR(m_graphicsCard.logicalInstance, m_graphicsCard.swapChain, nullptr);
+
 #ifdef DEBUG
         cleanDebugRes();
 #endif
