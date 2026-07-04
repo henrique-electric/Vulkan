@@ -18,6 +18,11 @@
 namespace vkEng
 {
 
+    enum WindowBackends {
+        GLFW,
+        SDL
+    };
+
     class VulkanEng
     {
     private:
