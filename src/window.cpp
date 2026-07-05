@@ -24,8 +24,6 @@ namespace win {
         engine->setupWindowSurface(m_glfwWin);
         engine->pickChainExtent(m_glfwWin);
         engine->initSwapChain();
-
-        initImGui();
     }
 
     void Window::initImgui(void)
