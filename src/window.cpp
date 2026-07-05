@@ -58,13 +58,17 @@ namespace win {
         ImGui::NewFrame();
     }
 
-
-    // Object descontructor, frees the glfw resources and deletes vulkan instance
-    Window::~Window() {
+    void Window::shutdownImGui()
+    {
         ImGui_ImplVulkan_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
 
+    }
+
+    // Object descontructor, frees the glfw resources and deletes vulkan instance
+    Window::~Window() {
+  
         glfwDestroyWindow(m_glfwWin);
         glfwTerminate();
 

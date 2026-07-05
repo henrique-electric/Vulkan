@@ -20,6 +20,8 @@ namespace win {
         static void windowKeyHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
         void initImGui(void);
         void initImgui(void);
+        void shutdownImGui();
+        
     public:
 
         // Functions
