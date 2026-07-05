@@ -87,6 +87,7 @@ namespace vkEng
         void validateCardExtensions(vkEng::gpuDevice& card);
         void validateCardSwapChain(SwapChainProperties& properties);
         void createImageViews();
+        void destroyImageViews();
         VkSurfaceFormatKHR pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats);
         VkPresentModeKHR pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes);
     };
