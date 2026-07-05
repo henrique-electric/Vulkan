@@ -39,7 +39,9 @@ namespace vkEng
         inline VkDevice getEngineLogicalDevice(void) { return this->m_graphicsCard.logicalInstance; }
         inline VkInstance getEngineVulkanInstance(void) { return this->m_vkInstance; }
         inline VkSurfaceKHR getEngineVulkanSurface(void) { return this->m_vulkanSurface; }
+        inline VkPhysicalDevice getEnginePhysicalDevice(void) { return this->m_graphicsCard.device; }
         inline VkQueue getEngineQueueHandler(void) { return this->m_graphicsCard.queueInterface; }
+        inline uint8_t getEngineQueueFamilyIndex(void) { return this->m_graphicsCard.queueFamily; }
         
 
 #ifdef DEBUG
