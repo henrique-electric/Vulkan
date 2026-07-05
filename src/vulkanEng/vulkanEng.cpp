@@ -114,7 +114,17 @@ namespace vkEng {
     
     VulkanEng::~VulkanEng()
     {
-        vkDestroySwapchainKHR(m_graphicsCard.logicalInstance, m_graphicsCard.swapChain, nullptr);
+        destroyImageViews();
+#ifdef DEBUG
+        std::cout << "Destroyed all the image views";
+#endif // DEBUG
+
+
+       vkDestroySwapchainKHR(m_graphicsCard.logicalInstance, m_graphicsCard.swapChain, nullptr);
+#ifdef DEBUG
+       std::cout << "Destroyed the swapchain";
+#endif // DEBUG
+
 
 #ifdef DEBUG
         cleanDebugRes();
@@ -135,5 +145,6 @@ namespace vkEng {
 #ifdef DEBUG
         std::cout << "Destroyed vulkan instace\n";
 #endif
+
     }
 }
