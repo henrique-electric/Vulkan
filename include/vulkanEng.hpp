@@ -90,6 +90,8 @@ namespace vkEng
         void destroyImageViews();
         VkSurfaceFormatKHR pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats);
         VkPresentModeKHR pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes);
+
+        VkShaderModule createShaderModule(std::vector<char>& byteCode);
     };
     
 }
