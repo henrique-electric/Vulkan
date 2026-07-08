@@ -16,6 +16,15 @@ namespace vkEng {
         int height;
     };
 
+    struct PipeLineCore {
+        VkPipeline pipeline;
+        VkPipelineLayout layout;
+    };
+
+    struct Commands {
+        VkCommandPool pool;
+    };
+
     struct SwapChainProperties {
         VkSurfaceCapabilitiesKHR capabilities;   // capabilities of the surface
         std::vector<VkSurfaceFormatKHR> formats; // formats supported by the surface
@@ -36,6 +45,7 @@ namespace vkEng {
         VkQueue queueInterface; // interface with the queue family being used
         swapChainFrameDimensions swapFrameDimensions; // Dimensions of the swapChain frame buffer
         SwapChainProperties swapChainProps;
+        Commands gpuCmd;
     };
 
     struct VkDeviceQueueCreateInfoMod {
