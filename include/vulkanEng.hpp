@@ -14,14 +14,10 @@
 #include <utils.hpp>
 #include <types.hpp>
 #include <macros.hpp>
+#include <enums.hpp>
 
 namespace vkEng
 {
-
-    enum WindowBackends {
-        GLFW,
-        SDL
-    };
 
     class VulkanEng
     {
@@ -88,10 +84,14 @@ namespace vkEng
         void validateCardSwapChain(SwapChainProperties& properties);
         void createImageViews();
         void destroyImageViews();
+        void createRenderPass();
+        void createCommandPool(); // Just one for this project
+        void createPipeline(VkShaderModule vert, VkShaderModule frag);
         VkSurfaceFormatKHR pickSwapFormat(const std::vector<VkSurfaceFormatKHR> &formats);
         VkPresentModeKHR pickSwapPresentMode(const std::vector<VkPresentModeKHR> &modes);
 
-        VkShaderModule createShaderModule(std::vector<char>& byteCode);
+        // Shader stuff
+        VkShaderModule createShaderModule(std::string shaderPath);
     };
     
 }
